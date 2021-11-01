@@ -37,6 +37,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
 " git management within vim/neovim
+Plug 'tpope/vim-git'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 
@@ -69,6 +70,9 @@ Plug 'github/copilot.vim'
 " Automatically clear search highlights after you move your cursor.
 Plug 'haya14busa/is.vim'
 
+" Navigate and manipulate files in a tree view.
+Plug 'lambdalisue/fern.vim'
+
 call plug#end()
 
 " Section: Colors/Theming
@@ -91,3 +95,7 @@ let g:sonokai_disable_italic_comment = 1
 
 colorscheme sonokai
 set background=dark
+
+" Section: fern
+
+noremap <silent> <Leader>f :Fern . -drawer -reveal=% -toggle -width=35<CR>
