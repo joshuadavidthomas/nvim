@@ -1,7 +1,7 @@
 let mapleader = ","
 
-:imap jk <Esc>
-:imap kj <Esc>
+:inoremap jk <Esc>
+:inoremap kj <Esc>
 
 set showmatch               " show matching brackets.
 set ignorecase              " case insensitive matching
