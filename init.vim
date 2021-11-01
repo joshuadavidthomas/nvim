@@ -11,6 +11,8 @@ nnoremap : ;
 vnoremap ; :
 vnoremap : ;
 
+" Section: sensible default
+
 set showmatch               " show matching brackets.
 set ignorecase              " case insensitive matching
 set mouse=v                 " middle-click paste with mouse
