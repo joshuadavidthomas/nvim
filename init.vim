@@ -1,3 +1,5 @@
+" Section: key maps
+
 let mapleader = ","
 
 :inoremap jk <Esc>
