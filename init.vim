@@ -109,3 +109,8 @@ set background=dark
 " Section: fern
 
 noremap <silent> <Leader>f :Fern . -drawer -reveal=% -toggle -width=35<CR>
+
+augroup FernGroup
+  autocmd!
+  autocmd FileType fern setlocal norelativenumber | setlocal nonumber
+augroup END
