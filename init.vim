@@ -5,6 +5,12 @@ let mapleader = ","
 :inoremap jk <Esc>
 :inoremap kj <Esc>
 
+" remap colon to semicolon in normal and visual mode, but not in insert mode
+nnoremap ; :
+nnoremap : ;
+vnoremap ; :
+vnoremap : ;
+
 set showmatch               " show matching brackets.
 set ignorecase              " case insensitive matching
 set mouse=v                 " middle-click paste with mouse
