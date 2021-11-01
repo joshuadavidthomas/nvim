@@ -88,6 +88,11 @@ Plug 'haya14busa/is.vim'
 " Navigate and manipulate files in a tree view.
 Plug 'lambdalisue/fern.vim'
 
+" File type icons
+Plug 'lambdalisue/nerdfont.vim'
+Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+let g:fern#renderer = "nerdfont"
+
 call plug#end()
 
 " Section: Colors/Theming
