@@ -59,7 +59,11 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " sonokai theme
 Plug 'sainnhe/sonokai'
+
+" lightline, bottom status bar
 Plug 'itchyny/lightline.vim'
+
+" GitHub Copilot
 Plug 'github/copilot.vim'
 
 " Automatically clear search highlights after you move your cursor.
