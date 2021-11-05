@@ -5,12 +5,6 @@ let mapleader = ","
 :inoremap jk <Esc>
 :inoremap kj <Esc>
 
-" remap colon to semicolon in normal and visual mode, but not in insert mode
-nnoremap ; :
-nnoremap : ;
-vnoremap ; :
-vnoremap : ;
-
 nnoremap <C-p> :Files<CR>
 nnoremap <C-o> :Buffers<CR>
 nnoremap <C-g> :GFiles<CR>
