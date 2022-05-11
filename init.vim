@@ -5,6 +5,20 @@ let mapleader = ","
 :inoremap jk <Esc>
 :inoremap kj <Esc>
 
+" edit/reload config
+nnoremap <Leader>e :e ~/.config/nvim/init.vim<CR>
+nnoremap <Leader>r :source ~/.config/nvim/init.vim<CR>
+
+" Move 1+ lines up or down in normal/visual mode
+nnoremap <C-k> :m .-2<CR>==
+nnoremap <C-j> :m .+1<CR>==
+vnoremap <C-k> :m '<-2<CR>gv=gv
+vnoremap <C-j> :m '>+1<CR>gv=gv
+nnoremap <C-Up> :m .-2<CR>==
+nnoremap <C-Down> :m .+1<CR>==
+vnoremap <C-Up> :m '<-2<CR>gv=gv
+vnoremap <C-Down> :m '>+1<CR>gv=gv
+
 nnoremap <C-p> :Files<CR>
 nnoremap <C-o> :Buffers<CR>
 nnoremap <C-g> :GFiles<CR>
