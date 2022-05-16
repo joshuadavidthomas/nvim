@@ -78,6 +78,9 @@ Plug 'editorconfig/editorconfig-vim'
 " code completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+" elixir
+Plug 'elixir-lsp/coc-elixir', {'do': 'yarn install && yarn prepack'}
+
 " treesitter syntax highlighting
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
