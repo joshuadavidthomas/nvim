@@ -12,11 +12,20 @@ map("i", "jk", "<Esc>l")
 map("i", "kj", "<Esc>l")
 map("i", "<Esc>", "<Esc>l")
 
--- Move to window using the <ctrl> hjkl keys
+-- windows
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window", remap = true })
 map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window", remap = true })
 map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window", remap = true })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right window", remap = true })
+map("n", "<leader>ww", "<C-w>p", { desc = "Other [w]indow", remap = true })
+map("n", "<leader>wd", "<C-w>c", { desc = "[d]elete window", remap = true })
+map("n", "<leader>w-", "<C-w>s<C-w>j", { desc = "[-] Split window below", remap = true })
+map("n", "<leader>w|", "<C-w>v<C-w>l", { desc = "[|] Split window right", remap = true })
+map("n", "<leader>-", "<C-w>s<C-w>j", { desc = "[-] Split window below", remap = true })
+map("n", "<leader>|", "<C-w>v<C-w>l", { desc = "[|] Split window right", remap = true })
+map("n", "<leader>wo", "<C-w>o", { desc = "f[o]cus window", remap = true })
+map("n", "<leader>w=", "<C-w>=", { desc = "[=] Equalize windows", remap = true })
+map("n", "<leader>ws", "<C-w><C-r><C-w>", { desc = "[s]wap windows", remap = true })
 
 -- Move Lines
 -- Yanked from the default LazyVim config and modified to use alt + shift + j/k
@@ -42,17 +51,6 @@ map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "[l]azy" })
 
 -- new file
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New [f]ile" })
-
--- windows
-map("n", "<leader>ww", "<C-W>p", { desc = "Other [w]indow", remap = true })
-map("n", "<leader>wd", "<C-W>c", { desc = "[d]elete window", remap = true })
-map("n", "<leader>w-", "<C-W>s", { desc = "[-] Split window below", remap = true })
-map("n", "<leader>w|", "<C-W>v", { desc = "[|] Split window right", remap = true })
-map("n", "<leader>-", "<C-W>s", { desc = "[-] Split window below", remap = true })
-map("n", "<leader>|", "<C-W>v", { desc = "[|] Split window right", remap = true })
-map("n", "<leader>wo", "<C-W>o", { desc = "f[o]cus window", remap = true })
-map("n", "<leader>w=", "<C-W>=", { desc = "[=] Equalize windows", remap = true })
-map("n", "<leader>ws", "<C-W><C-r><C-W>", { desc = "[s]wap windows", remap = true })
 
 -- toggle
 -- stylua: ignore
