@@ -1,3 +1,5 @@
+Util = require("lazyvim.util")
+
 return {
   -- Git related plugins
   {
@@ -43,9 +45,23 @@ return {
       {
         "<leader>gg",
         function()
+          local lazygit_cmd = (function()
+            -- check if the cwd is $HOME
+            -- if so the command should be lazygit --git-dir=$HOME/.local/share/yadm/repo.git --work-tree=$HOME
+            -- to account for yadm bare repo
+            -- taken from https://github.com/jesseduffield/lazygit/discussions/1201
+            -- TODO: revisit this to maybe allow for editing any of the files tracked by yadm
+            -- (not sure if this is possible, it probably is but I'm too lazy to figure it out atm)
+            if Util.root.cwd() == os.getenv("HOME") then
+              return "lazygit --git-dir=$HOME/.local/share/yadm/repo.git --work-tree=$HOME"
+            else
+              return "lazygit"
+            end
+          end)()
+
           require("toggleterm.terminal").Terminal
             :new({
-              cmd = "lazygit",
+              cmd = lazygit_cmd,
               dir = "git_dir",
               hidden = true,
               direction = "float",
