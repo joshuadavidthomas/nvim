@@ -35,6 +35,8 @@ return {
       { "<leader>sf", function() require("telescope.builtin").find_files({ hidden = true }) end, desc = "[f]iles" },
       { "<leader>sg", function() require("telescope.builtin").git_files() end, desc = "[g]it files" },
       { "<leader>sb", function() require("telescope.builtin").buffers() end, desc = "[b]uffers" },
+      { "<leader>sr", function() require("telescope.builtin").oldfiles({ only_cwd = true }) end, desc = "[r]ecent files (cwd)" },
+      { "<leader>sR", function() require("telescope.builtin").oldfiles() end, desc = "[R]ecent files (all)" },
       { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "[h]elp" },
       { "<leader>sk", "<cmd>Telescope keymaps<cr>", desc = "[k]eymaps" },
       { "<leader>sda", function() require("telescope.builtin").live_grep({ glob_pattern = { "admin.py", "!test_*.py"} }) end, desc = "[a]dmin" },
