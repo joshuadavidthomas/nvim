@@ -503,6 +503,24 @@ return {
         end
       end,
     },
+    config = function(_, opts)
+      local ToggleTerm = require("toggleterm")
+      ToggleTerm.setup(opts)
+
+      vim.api.nvim_create_autocmd("TermOpen", {
+        pattern = "term://*toggleterm#*",
+        callback = function(args)
+          local map_buf = function(lhs, rhs, desc)
+            vim.keymap.set("t", lhs, rhs, { buffer = args.buf, desc = desc, nowait = true })
+          end
+
+          map_buf("<c-h>", [[<Cmd>wincmd h<CR>]], "[h] move left")
+          map_buf("<c-j>", [[<Cmd>wincmd j<CR>]], "[j] move down")
+          map_buf("<c-k>", [[<Cmd>wincmd k<CR>]], "[k] move up")
+          map_buf("<c-l>", [[<Cmd>wincmd l<CR>]], "[l] move right")
+        end,
+      })
+    end,
   },
   -- Flash enhances the built-in search functionality by showing labels
   -- at the end of each match, letting you quickly jump to a specific
