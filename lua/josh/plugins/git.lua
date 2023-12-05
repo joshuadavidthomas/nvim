@@ -46,14 +46,35 @@ return {
         "<leader>gg",
         function()
           local lazygit_cmd = (function()
-            -- check if the cwd is $HOME
-            -- if so the command should be lazygit --git-dir=$HOME/.local/share/yadm/repo.git --work-tree=$HOME
-            -- to account for yadm bare repo
-            -- taken from https://github.com/jesseduffield/lazygit/discussions/1201
-            -- TODO: revisit this to maybe allow for editing any of the files tracked by yadm
-            -- (not sure if this is possible, it probably is but I'm too lazy to figure it out atm)
-            if Util.root.cwd() == os.getenv("HOME") then
-              return "lazygit --git-dir=$HOME/.local/share/yadm/repo.git --work-tree=$HOME"
+            local cwd = Util.root.cwd()
+            local yadm_git_dir = vim.env.HOME .. "/.local/share/yadm/repo.git"
+            local yadm_work_tree = vim.env.HOME
+
+            local is_yadm_repo = (function()
+              if vim.g.isYadmRepo == nil then
+                local git_ls_tree = vim
+                  .system({
+                    "git",
+                    "--git-dir=" .. yadm_git_dir,
+                    "--work-tree=" .. yadm_work_tree,
+                    "ls-tree",
+                    "-r",
+                    "HEAD",
+                    cwd,
+                  }, { cwd = cwd })
+                  :wait()
+
+                vim.g.isYadmRepo = git_ls_tree.stdout ~= ""
+                print("not cached", vim.g.isYadmRepo)
+              else
+                print("cached", vim.g.isYadmRepo)
+              end
+
+              return vim.g.isYadmRepo
+            end)()
+
+            if is_yadm_repo or cwd == yadm_work_tree then
+              return "lazygit --git-dir=" .. yadm_git_dir .. " --work-tree=" .. yadm_work_tree
             else
               return "lazygit"
             end
