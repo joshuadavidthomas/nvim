@@ -34,6 +34,7 @@ return {
         map("n", "<leader>gS", gs.stage_buffer, "[S]tage buffer")
         map("n", "<leader>gu", gs.undo_stage_hunk, "[u]ndo stage hunk")
         map("n", "<leader>gR", gs.reset_buffer, "[R]eset buffer")
+        map("n", "<leader>gb", gs.blame_line, "[b]lame line")
       end,
     },
   },
