@@ -1,6 +1,6 @@
 {
   "LuaSnip": { "branch": "master", "commit": "57c9f5c31b3d712376c704673eac8e948c82e9c1" },
-  "SchemaStore.nvim": { "branch": "main", "commit": "c23407de1f76df30ca197b69d78a11be5ce26009" },
+  "SchemaStore.nvim": { "branch": "main", "commit": "5372bf247839b46a121375d3d610ab8409d6100d" },
   "catppuccin": { "branch": "main", "commit": "079500a625f3ae5aa6efb758f1a17fe4c7a57e52" },
   "cmp-buffer": { "branch": "main", "commit": "3022dbc9166796b644a841a02de8dd1cc1d311fa" },
   "cmp-nvim-lsp": { "branch": "main", "commit": "5af77f54de1b16c34b23cba810150689a3a90312" },
@@ -70,7 +70,7 @@
   "venv-selector.nvim": { "branch": "main", "commit": "79709f8ad99ac2082d99a713985f3da0c924f4a2" },
   "vim-fugitive": { "branch": "master", "commit": "59659093581aad2afacedc81f009ed6a4bfad275" },
   "vim-illuminate": { "branch": "master", "commit": "3bd2ab64b5d63b29e05691e624927e5ebbf0fb86" },
-  "vim-just": { "branch": "main", "commit": "9ffcd1bc6e49c53e200560478277c7ce0ec95380" },
+  "vim-just": { "branch": "main", "commit": "cbba24e544dd32509a6b68271ce3142ab5a180c3" },
   "vim-rhubarb": { "branch": "master", "commit": "ee69335de176d9325267b0fd2597a22901d927b1" },
   "vim-sleuth": { "branch": "master", "commit": "1cc4557420f215d02c4d2645a748a816c220e99b" },
   "vim-startuptime": { "branch": "master", "commit": "454b3de856b7bd298700de33d79774ca9b9e3875" },
