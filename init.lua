@@ -61,6 +61,7 @@ require("lazy").setup({
   },
 })
 
-require("josh.options")
-require("josh.keymaps")
 require("josh.autocmds")
+require("josh.filetype")
+require("josh.keymaps")
+require("josh.options")
