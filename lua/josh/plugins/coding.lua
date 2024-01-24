@@ -378,4 +378,73 @@ return {
       { "=P", "<Plug>(YankyPutBeforeFilter)", desc = "Put before applying a filter" },
     },
   },
+  -- refactoring
+  {
+    "ThePrimeagen/refactoring.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("refactoring").setup()
+    end,
+    keys = {
+      {
+        "<leader>cre",
+        function()
+          require("refactoring").refactor("Extract Function")
+        end,
+        mode = "x",
+        desc = "[e]xtract function",
+      },
+      {
+        "<leader>crf",
+        function()
+          require("refactoring").refactor("Extract Function To File")
+        end,
+        mode = "x",
+        desc = "Extract function to [f]ile",
+      },
+      {
+        "<leader>crv",
+        function()
+          require("refactoring").refactor("Extract Variable")
+        end,
+        mode = "x",
+        desc = "Extract [v]ariable",
+      },
+      {
+        "<leader>cri",
+        function()
+          require("refactoring").refactor("Inline Variable")
+        end,
+        mode = { "n", "x" },
+        desc = "[i]nline variable",
+      },
+      {
+        "<leader>crI",
+        function()
+          require("refactoring").refactor("Inline Function")
+        end,
+        mode = "n",
+        desc = "[I]nline function",
+      },
+      {
+        "<leader>crb",
+        function()
+          require("refactoring").refactor("Extract Block")
+        end,
+        mode = "n",
+        desc = "Extract [b]lock",
+      },
+      {
+        "<leader>crB",
+        function()
+          require("refactoring").refactor("Extract Block to File")
+        end,
+        mode = "n",
+        desc = "Extract [B]lock to file",
+      },
+    },
+  },
 }

@@ -317,7 +317,7 @@ return {
         ["<leader>g"] = { name = "+[g]it" },
         ["<leader>f"] = { name = "+[f]ile/[f]ind" },
         ["<leader>s"] = { name = "+[s]earch" },
-        ["<leader>sr"] = { name = "+[r]eplace" },
+        ["<leader>sr"] = { name = "+[r]efactor" },
         ["<leader>sd"] = { name = "+[d]jango" },
         ["<leader>u"] = { name = "+[u]i" },
         ["<leader>w"] = { name = "+[w]indow" },
@@ -694,5 +694,11 @@ return {
       { "<leader>srw", function() require("spectre").open_visual({ select_word=true }) end, desc = "current [w]ord", mode = "n" },
       { "<leader>srw", function() require("spectre").open_visual() end, desc = "current [w]ord", mode = "v" },
     },
+  },
+  -- Automatically close buffers after x amount of inactivity
+  {
+    "chrisgrieser/nvim-early-retirement",
+    config = true,
+    event = "VeryLazy",
   },
 }
