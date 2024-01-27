@@ -171,6 +171,7 @@ return {
       indent = {
         char = "│",
         tab_char = "│",
+        repeat_linebreak = false,
       },
       scope = { enabled = false },
       exclude = {
