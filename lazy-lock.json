@@ -73,7 +73,7 @@
   "tree-sitter-just": { "branch": "main", "commit": "4f5d53b52a65771f9695df3f1a294d5c80b916fb" },
   "trouble.nvim": { "branch": "main", "commit": "f1168feada93c0154ede4d1fe9183bf69bac54ea" },
   "venv-selector.nvim": { "branch": "main", "commit": "fcb30164f2c4f8a34a305ead3247954a1fd8634f" },
-  "vim-fugitive": { "branch": "master", "commit": "ddedd5bd20b030dc6cbc8d4a83a4de5af77f8054" },
+  "vim-fugitive": { "branch": "master", "commit": "9f92ff14d9d1169e08f197a2250fcaea88e9c767" },
   "vim-illuminate": { "branch": "master", "commit": "305bf07b919ac526deb5193280379e2f8b599926" },
   "vim-just": { "branch": "main", "commit": "974b16e257e2d30d94ec954d815ff2755fa229fb" },
   "vim-rhubarb": { "branch": "master", "commit": "ee69335de176d9325267b0fd2597a22901d927b1" },
