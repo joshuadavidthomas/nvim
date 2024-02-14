@@ -1,0 +1,23 @@
+[project]
+name = "nvim"
+version = "0.1.0"
+description = "Manages neovim Python dependencies"
+authors = [
+    { name = "Josh", email = "josh@joshthomas.dev" }
+]
+dependencies = [
+    "pynvim>=0.5.0",
+]
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+virtual = true
+
+[tool.hatch.metadata]
+allow-direct-references = true

@@ -33,6 +33,9 @@ return {
         mode = { "n", "v" },
         desc = "[F]ormat Injected Langs",
       },
+      {
+        "<leader>cc", "<cmd>ConformInfo<cr>", desc = "[c]onform info",
+      },
     },
     init = function()
       -- Install the conform formatter on VeryLazy

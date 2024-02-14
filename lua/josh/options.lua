@@ -55,7 +55,7 @@ opt.laststatus = 3
 opt.splitkeep = "screen"
 
 -- python setup
-g.python3_host_prog = "/home/josh/.pyenv/versions/py3nvim/bin/python"
+g.python3_host_prog = "/home/josh/.config/nvim/.venv/bin/python"
 
 -- enable list mode to see whitespace
 opt.list = true
