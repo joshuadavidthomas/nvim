@@ -37,6 +37,7 @@ return {
       { "<leader>sb", function() require("telescope.builtin").buffers() end, desc = "[b]uffers" },
       { "<leader>sr", function() require("telescope.builtin").oldfiles({ only_cwd = true }) end, desc = "[r]ecent files (cwd)" },
       { "<leader>sR", function() require("telescope.builtin").oldfiles() end, desc = "[R]ecent files (all)" },
+      { "<leader>su", function() require("telescope.builtin").resume() end, desc = "Res[u]me" },
       { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "[h]elp" },
       { "<leader>sk", "<cmd>Telescope keymaps<cr>", desc = "[k]eymaps" },
       { "<leader>sda", function() require("telescope.builtin").live_grep({ glob_pattern = { "admin.py", "!test_*.py"} }) end, desc = "[a]dmin" },
@@ -67,10 +68,19 @@ return {
         })
       end
 
+      local open_with_trouble = function(...)
+        return require("trouble.providers.telescope").open_with_trouble(...)
+      end
+      local open_selected_with_trouble = function(...)
+        return require("trouble.providers.telescope").open_selected_with_trouble(...)
+      end
+
       return {
         defaults = {
           mappings = {
             i = {
+              ["<c-t>"] = open_with_trouble,
+              ["<a-t>"] = open_selected_with_trouble,
               ["<C-Down>"] = actions.cycle_history_next,
               ["<C-Up>"] = actions.cycle_history_prev,
               ["<C-f>"] = actions.preview_scrolling_down,
@@ -80,6 +90,7 @@ return {
             n = {
               ["s"] = flash,
               ["q"] = actions.close,
+              ["Del"] = actions.remove_selection,
             },
           },
         },
@@ -331,6 +342,21 @@ return {
       wk.setup(opts)
       wk.register(opts.defaults)
     end,
+  },
+  {
+    "stevearc/oil.nvim",
+    opts = {},
+    -- Optional dependencies
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    keys = {
+      {
+        "<leader>fo",
+        function()
+          require("oil").open()
+        end,
+        desc = "File browser ([o]il)",
+      },
+    },
   },
   -- create and manage predefined window layouts
   -- {
@@ -613,6 +639,7 @@ return {
   -- better diagnostics list and others
   {
     "folke/trouble.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     cmd = { "TroubleToggle", "Trouble" },
     opts = { use_diagnostic_signs = true },
     keys = {

@@ -32,6 +32,7 @@ return {
             },
           },
         },
+        django_lsp = {},
       },
       setup = {
         ruff_lsp = function()
@@ -41,6 +42,32 @@ return {
               client.server_capabilities.hoverProvider = false
             end
           end)
+        end,
+        django_lsp = function(_, opts)
+          local lspconfig = require("lspconfig")
+          local configs = require("lspconfig.configs")
+          local util = require("lspconfig.util")
+
+          local root_files = {
+            "manage.py",
+            "pyproject.toml",
+          }
+
+          if not configs.django_lsp then
+            configs.django_lsp = {
+              default_config = {
+                cmd = { "django-lsp" },
+                filetypes = { "htmldjango" },
+                root_dir = function(fname)
+                  return util.root_pattern(unpack(root_files))(fname) or util.path.dirname(fname)
+                end,
+                name = "django_lsp",
+                options = {
+                  logfile = util.path.join(vim.fn.stdpath("cache"), "django-lsp.log"),
+                },
+              },
+            }
+          end
         end,
       },
     },
