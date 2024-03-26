@@ -1,3 +1,5 @@
+local git = require("utils.git")
+
 local function augroup(name)
   return vim.api.nvim_create_augroup("josh_" .. name, { clear = true })
 end
@@ -23,5 +25,35 @@ vim.api.nvim_create_autocmd("User", {
         vim.system({ "yadm", "diff", "--quiet", "--", lock_file }, { cwd = cwd }, update_remote)
       end
     end, 100)
+  end,
+})
+
+-- if in git repo with github.com origin, add ability to copy permalink
+vim.api.nvim_create_autocmd({ "BufEnter", "VimEnter" }, {
+  group = augroup("permalink"),
+  callback = function()
+    local buffer_path = vim.fn.expand("%:p")
+
+    if git.is_in_git_repo(buffer_path) then
+      require("which-key").register({
+        ["<leader>gl"] = {
+          function()
+            vim.fn.setreg("+", git.gh_permalink(buffer_path))
+            vim.notify("Copied permalink to clipboard")
+          end,
+          "Copy GH permalink to file",
+        },
+      }, { mode = "n", buffer = vim.api.nvim_get_current_buf() })
+      require("which-key").register({
+        ["<leader>gl"] = {
+          function()
+            vim.fn.setreg("+", git.gh_permalink_lineno(buffer_path))
+            vim.api.nvim_input("<Esc>")
+            vim.notify("Copied permalink to clipboard")
+          end,
+          "Copy GH permalink to selection",
+        },
+      }, { mode = "v", buffer = vim.api.nvim_get_current_buf() })
+    end
   end,
 })
