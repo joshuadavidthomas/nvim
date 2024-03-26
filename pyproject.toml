@@ -1,14 +1,10 @@
 [project]
 name = "nvim"
 version = "0.1.0"
-description = "Manages neovim Python dependencies"
-authors = [
-    { name = "Josh", email = "josh@joshthomas.dev" }
-]
-dependencies = [
-    "pynvim>=0.5.0",
-    "django-lsp @ file:///home/josh/projects/django-lsp",
-]
+description = "Manage Neovim Python dependencies"
+authors = [{ name = "Josh", email = "josh@joshthomas.dev" }]
+dependencies = ["pynvim>=0.5.0"]
+readme = "README.md"
 requires-python = ">= 3.8"
 
 [build-system]
