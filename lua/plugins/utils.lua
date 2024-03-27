@@ -1,3 +1,3 @@
 return {
-  "justinsgithub/wezterm-types",
+  { "justinsgithub/wezterm-types", cond = false },
 }
