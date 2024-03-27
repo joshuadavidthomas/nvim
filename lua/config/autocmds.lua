@@ -1,5 +1,3 @@
-local git = require("utils.git")
-
 local function augroup(name)
   return vim.api.nvim_create_augroup("josh_" .. name, { clear = true })
 end
@@ -25,5 +23,17 @@ vim.api.nvim_create_autocmd("User", {
         vim.system({ "yadm", "diff", "--quiet", "--", lock_file }, { cwd = cwd }, update_remote)
       end
     end, 100)
+  end,
+})
+
+-- close some filetypes with <q>
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("close_with_q"),
+  pattern = {
+    "chatgpt-input",
+  },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
   end,
 })
