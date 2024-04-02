@@ -11,6 +11,10 @@ map("i", "jk", exit_insert_mode_smartly, { silent = true, noremap = true })
 map("i", "kj", exit_insert_mode_smartly, { silent = true, noremap = true })
 map("i", "<Esc>", exit_insert_mode_smartly, { silent = true, noremap = true })
 
+-- remap <C-u> and <C-d> to center the page automatically
+map("n", "<C-u>", "<C-u>zz", { desc = "Page Up" })
+map("n", "<C-d>", "<C-d>zz", { desc = "Page Down" })
+
 -- move lines
 -- yanked from the default LazyVim config and modified to use alt + shift + j/k
 -- as just alt + j/k doesn't seem to work in Windows Terminal
