@@ -1,10 +1,11 @@
+local p = require("josh.utils.path")
+
 return {
   {
     "jackMort/ChatGPT.nvim",
     cmd = { "ChatGPT", "ChatGPTEditWithInstruction", "ChatGPTRun" },
     config = function()
-      local home = vim.fn.expand("$HOME")
-      require("chatgpt").setup({ api_key_cmd = "cat " .. home .. "/.chatgpt" })
+      require("chatgpt").setup({ api_key_cmd = "cat " .. p.platformdirs().home .. "/.chatgpt" })
     end,
     dependencies = {
       "MunifTanjim/nui.nvim",

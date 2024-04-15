@@ -1,8 +1,18 @@
+local p = require("josh.utils.path")
+
 return {
   {
     "stevearc/oil.nvim",
-    opts = {},
-    -- Optional dependencies
+    event = "VimEnter",
+    opts = {
+      default_file_explorer = true,
+      view_options = {
+        is_hidden_file = function(name, _)
+          local current_dir = require("oil").get_current_dir()
+          return p.is_hidden_file(name, current_dir)
+        end,
+      },
+    },
     dependencies = { "nvim-tree/nvim-web-devicons" },
     keys = {
       {
@@ -10,6 +20,14 @@ return {
         function()
           require("oil").open()
         end,
+        desc = "File browser (oil)",
+      },
+      {
+        "-",
+        function()
+          require("oil").open()
+        end,
+        mode = "n",
         desc = "File browser (oil)",
       },
     },
@@ -74,17 +92,16 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     keys = {
-      -- add a keymap to browse plugin files
-      -- stylua: ignore
       {
         "<leader>fp",
-        function() require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root }) end,
+        function()
+          require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root })
+        end,
         desc = "Find Plugin File",
       },
       { "<leader>fr", LazyVim.telescope("oldfiles", { cwd = vim.uv.cwd() }), desc = "Recent (cwd)" },
       { "<leader>fR", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
     },
-    -- change some options
     opts = {
       defaults = {
         layout_strategy = "horizontal",
@@ -102,5 +119,13 @@ return {
         ["<leader>n"] = { name = "+notes" },
       })
     end,
+  },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    opts = {
+      filesystem = {
+        hijack_netrw_behavior = "disabled",
+      },
+    },
   },
 }

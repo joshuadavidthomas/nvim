@@ -1,5 +1,4 @@
 return {
-  -- Vim syntax for Justfiles
   {
     "NoahTheDuke/vim-just",
     event = "LazyFile",

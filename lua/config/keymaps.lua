@@ -26,4 +26,4 @@ map("v", "<A-J>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 map("v", "<A-K>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- copy github permalink
-map({ "n", "v" }, "<leader>gl", require("utils.git").copy_gh_permalink, { desc = "Copy GH permalink to file" })
+map({ "n", "v" }, "<leader>gl", require("josh.utils.git").copy_gh_permalink, { desc = "Copy GH permalink to file" })
