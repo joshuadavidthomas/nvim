@@ -73,6 +73,13 @@ return {
         desc = "[o]pen note for current line",
       },
       {
+        "<leader>nd",
+        function()
+          require("quicknote").DeleteNoteAtCurrentLine()
+        end,
+        desc = "[d]elete note for current line",
+      },
+      {
         "<leader>nt",
         function()
           require("quicknote").ToggleNoteSigns()
