@@ -57,39 +57,6 @@ return {
     },
   },
   {
-    "mrjones2014/smart-splits.nvim",
-    opts = {},
-    keys = function()
-      local dirkeys = {
-        h = "Left",
-        j = "Down",
-        k = "Up",
-        l = "Right",
-      }
-
-      local keys = {}
-
-      for key, dir in pairs(dirkeys) do
-        local function action(ss_func)
-          return require("smart-splits")[ss_func .. "_" .. string.lower(dir)]
-        end
-        local function desc(init)
-          return init .. " " .. string.lower(dir)
-        end
-
-        local swap_action = action("swap_buf")
-        local swap_desc = desc("Swap pane")
-
-        table.insert(keys, { "<C-" .. key .. ">", action("move_cursor"), mode = "n", desc = desc("Move cursor") })
-        table.insert(keys, { "<C-" .. dir .. ">", action("resize"), mode = "n", desc = desc("Resize pane") })
-        table.insert(keys, { "<leader><C-" .. dir .. ">", swap_action, mode = "n", desc = swap_desc })
-        table.insert(keys, { "<leader><C-" .. key .. ">", swap_action, mode = "n", desc = swap_desc })
-      end
-
-      return keys
-    end,
-  },
-  {
     "nvim-telescope/telescope.nvim",
     keys = {
       {
