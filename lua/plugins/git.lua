@@ -8,8 +8,11 @@ return {
       "nvim-tree/nvim-web-devicons",
     },
     config = true,
+    opts = {
+      enable_builtin = true,
+    },
     keys = {
-      { "<leader>gi", "<CMD>Octo issue list<CR>", desc = "list repo [i]ssues" },
+      { "<leader>go", "<cmd>Octo<cr>", desc = "start [o]cto" },
     },
   },
   {
