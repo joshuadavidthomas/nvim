@@ -12,7 +12,7 @@
   "conform.nvim": { "branch": "master", "commit": "9a06e83527407a7600a2fe4e0d10adf432b6215e" },
   "crates.nvim": { "branch": "main", "commit": "eecd13449945ee2c064e00c618dfec9b2d856ea3" },
   "dashboard-nvim": { "branch": "master", "commit": "4f7f9369f2cf896adcb7c1780ecd07674d1f34b5" },
-  "dial.nvim": { "branch": "master", "commit": "7af2daaaf933b0617ded0f78b49f4d5fc45f9f64" },
+  "dial.nvim": { "branch": "master", "commit": "750f802879c90ea51f92b68c35fa562ee575804a" },
   "diffview.nvim": { "branch": "main", "commit": "4516612fe98ff56ae0415a259ff6361a89419b0a" },
   "dressing.nvim": { "branch": "master", "commit": "6741f1062d3dc6e4755367a7e9b347b553623f04" },
   "edgy.nvim": { "branch": "main", "commit": "a8bc1d24798c80a391f1a5d898a50c41a7f93883" },
