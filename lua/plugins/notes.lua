@@ -1,35 +1,21 @@
 return {
-  "epwalsh/obsidian.nvim",
-  version = "*",
-  lazy = true,
-  ft = "markdown",
-  -- cmd = {
-  --   "ObsidianOpen",
-  --   "ObsidianQuickSwitch",
-  --   "ObsidianNew",
-  --   "ObsidianSearch",
-  --   "ObsidianTemplate",
-  --   "ObsidianToday",
-  --   "ObsidianTomorrow",
-  --   "ObsidianYesterday",
-  -- },
-  -- event = {
-  --   "BufReadPre " .. vim.fn.expand("~") .. "/obsidian/**/**.md",
-  --   "BufNewFile " .. vim.fn.expand("~") .. "/obsidian/**/**.md",
-  --   "BufReadPre /mnt/c/Users/jthomas/OneDrive - The Westervelt Company/Documents/Obsidian Sync/**.md",
-  --   "BufNewFile /mnt/c/Users/jthomas/OneDrive - The Westervelt Company/Documents/Obsidian Sync/**.md",
-  -- },
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-    "hrsh7th/nvim-cmp",
-    "nvim-telescope/telescope.nvim",
-    "nvim-treesitter",
-  },
-  opts = {
-    workspaces = {
-      {
-        name = "personal",
-        path = "~/obsidian/notes",
+  {
+    "epwalsh/obsidian.nvim",
+    version = "*",
+    lazy = true,
+    ft = "markdown",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+      "nvim-telescope/telescope.nvim",
+      "nvim-treesitter",
+    },
+    opts = {
+      workspaces = {
+        {
+          name = "notes",
+          path = "~/Documents/notes",
+        },
       },
     },
   },
