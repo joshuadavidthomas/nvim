@@ -1,6 +1,5 @@
 {
   "ChatGPT.nvim": { "branch": "main", "commit": "f081338f07216a46d3915ce46c1fcb083bcb5016" },
-  "CopilotChat.nvim": { "branch": "canary", "commit": "82923efe22b604cf9c0cad0bb2a74aa9247755ab" },
   "LazyVim": { "branch": "main", "commit": "0471ca14cae4fd249a848a30855e8cfb39be9dbc" },
   "SchemaStore.nvim": { "branch": "main", "commit": "30946db59edba23103c2f524e636910a7a2160df" },
   "bufferline.nvim": { "branch": "main", "commit": "81820cac7c85e51e4cf179f8a66d13dbf7b032d9" },
