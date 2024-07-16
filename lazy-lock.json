@@ -77,7 +77,7 @@
   "vim-just": { "branch": "main", "commit": "5dd22247ea21fa0d7d7bc258ade827c5c777b716" },
   "vim-svelte-plugin": { "branch": "master", "commit": "e0971a037ace074f61703fd8d0cd7feb313690ac" },
   "vim-wakatime": { "branch": "master", "commit": "3cb40867cb5a3120f9bef76eff88edc7f1dc1a23" },
-  "which-key.nvim": { "branch": "main", "commit": "903e468e12329ce2dc927af227b36e536eb35475" },
+  "which-key.nvim": { "branch": "main", "commit": "635f7f46cbd1c724f9edbd1f8952af6729d9c36d" },
   "yanky.nvim": { "branch": "main", "commit": "73215b77d22ebb179cef98e7e1235825431d10e4" },
   "zen-mode.nvim": { "branch": "main", "commit": "a31cf7113db34646ca320f8c2df22cf1fbfc6f2a" }
 }
