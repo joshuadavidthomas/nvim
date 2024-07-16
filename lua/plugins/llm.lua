@@ -12,15 +12,14 @@ return {
       "nvim-lua/plenary.nvim",
       "folke/trouble.nvim",
       "nvim-telescope/telescope.nvim",
-      {
-        "folke/which-key.nvim",
-        opts = {
-          defaults = {
-            ["<leader>cp"] = { name = "+chatgpt" },
-          },
-        },
-      },
+      "folke/which-key.nvim",
     },
+    init = function()
+      local wk = require("which-key")
+      wk.add({
+        { "<leader>cp", group = "+chatgpt" },
+      })
+    end,
     keys = {
       { "<leader>cpc", "<cmd>ChatGPT<CR>", desc = "ChatGPT" },
       { "<leader>cpe", "<cmd>ChatGPTEditWithInstruction<CR>", mode = { "n", "v" }, desc = "Edit with instruction" },

@@ -39,6 +39,15 @@ return {
   },
   {
     "cbochs/grapple.nvim",
+    dependencies = {
+      "folke/which-key.nvim",
+    },
+    init = function()
+      local wk = require("which-key")
+      wk.add({
+        { "<leader>a", group = "+tags" },
+      })
+    end,
     opts = {
       scope = "git", -- also try out "git_branch"
     },
@@ -78,15 +87,6 @@ return {
   --     },
   --   },
   -- },
-  {
-    "folke/which-key.nvim",
-    opts = function(_, opts)
-      table.insert(opts.defaults, {
-        ["<leader>a"] = { name = "+tags" },
-        ["<leader>n"] = { name = "+notes" },
-      })
-    end,
-  },
   {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {

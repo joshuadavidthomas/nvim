@@ -73,11 +73,13 @@ return {
         desc = "[t]oggle note signs",
       },
     },
-    config = function(_, opts)
+    init = function()
       local wk = require("which-key")
-      wk.register({
-        ["n"] = { name = "+notes" },
+      wk.add({
+        { "<leader>n", group = "+notes" },
       })
+    end,
+    config = function(_, opts)
       require("quicknote").setup(opts)
     end,
   },

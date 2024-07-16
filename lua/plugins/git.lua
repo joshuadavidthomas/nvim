@@ -8,17 +8,15 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope.nvim",
       "nvim-tree/nvim-web-devicons",
-      {
-        "folke/which-key.nvim",
-        opts = {
-          defaults = {
-            ["<leader>gp"] = { name = "+pr" },
-          },
-        },
-      },
+      "folke/which-key.nvim",
     },
     init = function()
       vim.treesitter.language.register("markdown", "octo")
+
+      local wk = require("which-key")
+      wk.add({
+        { "<leader>gp", group = "+pr" },
+      })
     end,
     opts = function(_, opts)
       vim.api.nvim_create_autocmd("ExitPre", {
