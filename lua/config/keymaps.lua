@@ -27,3 +27,40 @@ map("v", "<A-K>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- copy github permalink
 map({ "n", "v" }, "<leader>gl", require("josh.utils.git").copy_gh_permalink, { desc = "Copy GH permalink to file" })
+
+-- taken from `folke/dot`, license included in the `.licesnes` directory at the root of the repo
+-- https://github.com/folke/dot/blob/f5ba84b3a73a4e2aa4648c14707ce6847c29169b/nvim/lua/config/keymaps.lua#L5-L38
+local nav = {
+  h = "Left",
+  j = "Down",
+  k = "Up",
+  l = "Right",
+}
+
+local function navigate(dir)
+  return function()
+    local win = vim.api.nvim_get_current_win()
+    vim.cmd.wincmd(dir)
+    local pane = vim.env.WEZTERM_PANE
+    if pane and win == vim.api.nvim_get_current_win() then
+      local pane_dir = nav[dir]
+      vim.system({ "wezterm", "cli", "activate-pane-direction", pane_dir }, { text = true }, function(p)
+        if p.code ~= 0 then
+          vim.notify(
+            "Failed to move to pane " .. pane_dir .. "\n" .. p.stderr,
+            vim.log.levels.ERROR,
+            { title = "Wezterm" }
+          )
+        end
+      end)
+    end
+  end
+end
+
+require("josh.utils").set_user_var("IS_NVIM", true)
+
+-- Move to window using the movement keys
+for key, dir in pairs(nav) do
+  map("n", "<" .. dir .. ">", navigate(key))
+  map("n", "<C-" .. key .. ">", navigate(key))
+end

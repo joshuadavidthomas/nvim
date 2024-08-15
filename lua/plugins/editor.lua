@@ -39,6 +39,15 @@ return {
   },
   {
     "cbochs/grapple.nvim",
+    dependencies = {
+      "folke/which-key.nvim",
+    },
+    init = function()
+      local wk = require("which-key")
+      wk.add({
+        { "<leader>a", group = "+tags" },
+      })
+    end,
     opts = {
       scope = "git", -- also try out "git_branch"
     },
@@ -56,70 +65,28 @@ return {
       { "<leader>a4", "<cmd>Grapple select index=4<cr>", desc = "select tag [4]" },
     },
   },
-  {
-    "mrjones2014/smart-splits.nvim",
-    opts = {},
-    keys = function()
-      local dirkeys = {
-        h = "Left",
-        j = "Down",
-        k = "Up",
-        l = "Right",
-      }
-
-      local keys = {}
-
-      for key, dir in pairs(dirkeys) do
-        local function action(ss_func)
-          return require("smart-splits")[ss_func .. "_" .. string.lower(dir)]
-        end
-        local function desc(init)
-          return init .. " " .. string.lower(dir)
-        end
-
-        local swap_action = action("swap_buf")
-        local swap_desc = desc("Swap pane")
-
-        table.insert(keys, { "<C-" .. key .. ">", action("move_cursor"), mode = "n", desc = desc("Move cursor") })
-        table.insert(keys, { "<C-" .. dir .. ">", action("resize"), mode = "n", desc = desc("Resize pane") })
-        table.insert(keys, { "<leader><C-" .. dir .. ">", swap_action, mode = "n", desc = swap_desc })
-        table.insert(keys, { "<leader><C-" .. key .. ">", swap_action, mode = "n", desc = swap_desc })
-      end
-
-      return keys
-    end,
-  },
-  {
-    "nvim-telescope/telescope.nvim",
-    keys = {
-      {
-        "<leader>fp",
-        function()
-          require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root })
-        end,
-        desc = "Find Plugin File",
-      },
-      { "<leader>fr", LazyVim.telescope("oldfiles", { cwd = vim.uv.cwd() }), desc = "Recent (cwd)" },
-      { "<leader>fR", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
-    },
-    opts = {
-      defaults = {
-        layout_strategy = "horizontal",
-        layout_config = { prompt_position = "top" },
-        sorting_strategy = "ascending",
-        winblend = 0,
-      },
-    },
-  },
-  {
-    "folke/which-key.nvim",
-    opts = function(_, opts)
-      table.insert(opts.defaults, {
-        ["<leader>a"] = { name = "+tags" },
-        ["<leader>n"] = { name = "+notes" },
-      })
-    end,
-  },
+  -- {
+  --   "nvim-telescope/telescope.nvim",
+  --   keys = {
+  --     {
+  --       "<leader>fp",
+  --       function()
+  --         require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root })
+  --       end,
+  --       desc = "Find Plugin File",
+  --     },
+  --     { "<leader>fr", LazyVim.pick.telescope("oldfiles", { cwd = vim.uv.cwd() }), desc = "Recent (cwd)" },
+  --     { "<leader>fR", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
+  --   },
+  --   opts = {
+  --     defaults = {
+  --       layout_strategy = "horizontal",
+  --       layout_config = { prompt_position = "top" },
+  --       sorting_strategy = "ascending",
+  --       winblend = 0,
+  --     },
+  --   },
+  -- },
   {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {
