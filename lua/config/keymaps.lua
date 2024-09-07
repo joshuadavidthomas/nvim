@@ -25,6 +25,8 @@ map("i", "<A-K>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
 map("v", "<A-J>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 map("v", "<A-K>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
+map("n", "yY", ":%y<cr>", { desc = "Yank entire buffer" })
+
 -- copy github permalink
 map({ "n", "v" }, "<leader>gl", require("josh.utils.git").copy_gh_permalink, { desc = "Copy GH permalink to file" })
 
