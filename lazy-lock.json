@@ -60,7 +60,7 @@
   "plenary.nvim": { "branch": "master", "commit": "2d9b06177a975543726ce5c73fca176cedbffe9d" },
   "precognition.nvim": { "branch": "main", "commit": "531971e6d883e99b1572bf47294e22988d8fbec0" },
   "quicknote.nvim": { "branch": "master", "commit": "83908ee9c98d81fd4b50f82f6cfc94e0f260ca14" },
-  "render-markdown.nvim": { "branch": "main", "commit": "da707623447752ca8eb00b7606b8ffe7dac18ce0" },
+  "render-markdown.nvim": { "branch": "main", "commit": "b6b903cc09df1441602fc04665fb12cef576a914" },
   "rustaceanvim": { "branch": "master", "commit": "d0b2369e677e299ae9d010b997e54c983c63802d" },
   "snacks.nvim": { "branch": "main", "commit": "60bd4e108cf7b2df0c0f578815b2b985d2cc2871" },
   "tailwindcss-colorizer-cmp.nvim": { "branch": "main", "commit": "3d3cd95e4a4135c250faf83dd5ed61b8e5502b86" },
