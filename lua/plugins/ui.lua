@@ -11,10 +11,12 @@ return {
       end
     end,
   },
-  "folke/twilight.nvim",
   {
     "folke/zen-mode.nvim",
     cmd = "ZenMode",
+    dependencies = {
+      "folke/twilight.nvim",
+    },
     opts = {
       plugins = {
         wezterm = {

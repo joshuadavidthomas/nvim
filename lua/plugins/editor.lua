@@ -1,9 +1,11 @@
 local p = require("josh.utils.path")
 
+local vim_opened_to_dir = vim.fn.argc() > 0 and vim.fn.isdirectory(vim.fn.argv()[1]) == 1
+
 return {
   {
     "stevearc/oil.nvim",
-    event = "VimEnter",
+    lazy = not vim_opened_to_dir,
     opts = {
       default_file_explorer = true,
       view_options = {
@@ -94,5 +96,11 @@ return {
         hijack_netrw_behavior = "disabled",
       },
     },
+  },
+  {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {},
   },
 }

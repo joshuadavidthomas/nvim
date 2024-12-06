@@ -1,8 +1,0 @@
-{
-  "window_cmd": "edit",
-  "use_telescope": true,
-  "filetypes": ["md", "py", "lua", "js", "sh"],
-  "localKeys": [],
-  "scratch_file_dir": "/home/josh/.cache/nvim/scratch.nvim",
-  "filetype_details": {}
-}

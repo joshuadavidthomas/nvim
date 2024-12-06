@@ -224,24 +224,27 @@ function M.buffer_to_path(buffer)
 end
 
 function M.platformdirs(app)
+  app = app or ""
   local home = vim.env.HOME
   local user_data_dir = vim.env.XDG_DATA_HOME or M.join(home, ".local", "share")
   local user_config_dir = vim.env.XDG_CONFIG_HOME or M.join(home, ".config")
   local user_cache_dir = vim.env.XDG_CACHE_HOME or M.join(home, ".cache")
   local user_state_dir = vim.env.XDG_STATE_HOME or M.join(home, ".local", "state")
-  local site_data_dir = vim.env.XDG_DATA_DIR
+  local site_data_dir = vim.env.XDG_DATA_DIR or "/usr/local/share"
   local site_config_dir = (function()
     local dirs = vim.env.XDG_CONFIG_DIRS
     if not dirs then
-      dirs = { "/etc/xdg" }
+      return "/etc/xdg"
     end
-    local config_dirs = {}
-    for _, value in ipairs(dirs) do
-      table.insert(config_dirs, M.join(value, app))
+    local config_dirs = type(dirs) == "string" and vim.split(dirs, ":") or { "/etc/xdg" }
+    local result = {}
+    for _, value in ipairs(config_dirs) do
+      table.insert(result, M.join(value, app))
     end
-    return M.join_paths(config_dirs)
+    return result[1] -- Return first path
   end)()
   local site_cache_dir = "/var/cache"
+
   return {
     home = home,
     user_data_dir = M.join(user_data_dir, app),
@@ -249,7 +252,7 @@ function M.platformdirs(app)
     user_cache_dir = M.join(user_cache_dir, app),
     user_state_dir = M.join(user_state_dir, app),
     site_data_dir = M.join(site_data_dir, app),
-    site_config_dir = site_config_dir[1],
+    site_config_dir = site_config_dir,
     site_cache_dir = M.join(site_cache_dir, app),
   }
 end
