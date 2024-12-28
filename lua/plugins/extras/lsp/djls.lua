@@ -15,7 +15,11 @@ return {
           if not configs.django_lsp then
             configs.django_lsp = {
               default_config = {
-                cmd = { p.platformdirs().home .. "/projects/django-language-server/target/debug/djls" },
+                cmd = {
+                  "djls",
+                  -- p.platformdirs().home .. "/projects/django-language-server/target/debug/djls",
+                  "serve",
+                },
                 filetypes = { "htmldjango" },
                 root_dir = function(fname)
                   local root = util.root_pattern("manage.py", "pyproject.toml")(fname)

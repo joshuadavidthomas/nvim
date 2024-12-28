@@ -8,6 +8,26 @@ return {
     lazy = not vim_opened_to_dir,
     opts = {
       default_file_explorer = true,
+      keymaps = {
+        gs = {
+          callback = function()
+            local oil = require("oil")
+            local prefills = { paths = oil.get_current_dir() }
+            local grug_far = require("grug-far")
+            if not grug_far.has_instance("explorer") then
+              grug_far.open({
+                instanceName = "explorer",
+                prefills = prefills,
+                staticTitle = "Find and Replace from Explorer",
+              })
+            else
+              grug_far.open_instance("explorer")
+              grug_far.update_instance_prefills("explorer", prefills, false)
+            end
+          end,
+          desc = "Grep search in directory",
+        },
+      },
       view_options = {
         is_hidden_file = function(name, _)
           local current_dir = require("oil").get_current_dir()
@@ -67,28 +87,6 @@ return {
       { "<leader>a4", "<cmd>Grapple select index=4<cr>", desc = "select tag [4]" },
     },
   },
-  -- {
-  --   "nvim-telescope/telescope.nvim",
-  --   keys = {
-  --     {
-  --       "<leader>fp",
-  --       function()
-  --         require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root })
-  --       end,
-  --       desc = "Find Plugin File",
-  --     },
-  --     { "<leader>fr", LazyVim.pick.telescope("oldfiles", { cwd = vim.uv.cwd() }), desc = "Recent (cwd)" },
-  --     { "<leader>fR", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
-  --   },
-  --   opts = {
-  --     defaults = {
-  --       layout_strategy = "horizontal",
-  --       layout_config = { prompt_position = "top" },
-  --       sorting_strategy = "ascending",
-  --       winblend = 0,
-  --     },
-  --   },
-  -- },
   {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {
@@ -96,11 +94,5 @@ return {
         hijack_netrw_behavior = "disabled",
       },
     },
-  },
-  {
-    "folke/snacks.nvim",
-    priority = 1000,
-    lazy = false,
-    opts = {},
   },
 }
