@@ -14,3 +14,6 @@ opt.listchars = {
 -- python setup
 g.python3_host_prog = "/home/josh/.config/nvim/.venv/bin/python"
 g.lazyvim_python_lsp = "basedpyright"
+
+-- disable snacks.animate
+g.snacks_animate = false
