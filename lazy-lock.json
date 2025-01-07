@@ -10,7 +10,6 @@
   "crates.nvim": { "branch": "main", "commit": "bd35b13e94a292ee6e32c351e05ca2202dc9f070" },
   "dial.nvim": { "branch": "master", "commit": "46b4375e84e8eb771129bff6b2b1e47746601ef9" },
   "diffview.nvim": { "branch": "main", "commit": "4516612fe98ff56ae0415a259ff6361a89419b0a" },
-  "django-language-server": { "branch": "main", "commit": "59e2665c6fd6c680c46c300dd2f550e3fa49982a" },
   "edgy.nvim": { "branch": "main", "commit": "7e8dedc39abebe40c289b8012cc89b11c69aa7a0" },
   "flash.nvim": { "branch": "main", "commit": "34c7be146a91fec3555c33fe89c7d643f6ef5cf1" },
   "friendly-snippets": { "branch": "main", "commit": "efff286dd74c22f731cdec26a70b46e5b203c619" },
