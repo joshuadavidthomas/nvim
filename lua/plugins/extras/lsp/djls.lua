@@ -1,6 +1,9 @@
 local p = require("josh.utils.path")
 
 return {
+  -- {
+  --   "joshuadavidthomas/django-language-server",
+  -- },
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -15,11 +18,7 @@ return {
           if not configs.django_lsp then
             configs.django_lsp = {
               default_config = {
-                cmd = {
-                  "djls",
-                  -- p.platformdirs().home .. "/projects/django-language-server/target/debug/djls",
-                  "serve",
-                },
+                cmd = { "djls", "serve" },
                 filetypes = { "htmldjango" },
                 root_dir = function(fname)
                   local root = util.root_pattern("manage.py", "pyproject.toml")(fname)
@@ -41,7 +40,9 @@ return {
                 },
                 on_attach = function(client, bufnr)
                   vim.notify("Django LSP attached to buffer: " .. bufnr)
+                  vim.notify("Client capabilities: " .. vim.inspect(client.server_capabilities))
                 end,
+                capabilities = vim.lsp.protocol.make_client_capabilities(),
               },
             }
           end

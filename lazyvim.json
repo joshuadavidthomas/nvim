@@ -23,6 +23,7 @@
     "lazyvim.plugins.extras.util.dot",
     "lazyvim.plugins.extras.util.mini-hipatterns",
     "lazyvim.plugins.extras.vscode",
+    "plugins.extras.ai.codecompanion",
     "plugins.extras.lsp.djls"
   ],
   "news": {
