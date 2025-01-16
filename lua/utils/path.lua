@@ -267,7 +267,7 @@ function M.is_hidden_file(name, current_dir)
   end
 
   local cwd = current_dir or vim.fn.fnamemodify(name, ":p:h")
-  local gitignore_patterns = require("josh.utils.git").get_gitignore_patterns(cwd)
+  local gitignore_patterns = require("utils.git").get_gitignore_patterns(cwd)
   if gitignore_patterns then
     for _, pattern in ipairs(gitignore_patterns) do
       if pattern ~= "" then

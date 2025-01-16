@@ -1,7 +1,7 @@
-local f = require("josh.utils.file")
-local p = require("josh.utils.path")
-local s = require("josh.utils.string")
-local v = require("josh.utils.vim")
+local f = require("utils.file")
+local p = require("utils.path")
+local s = require("utils.string")
+local v = require("utils.vim")
 
 local M = {}
 

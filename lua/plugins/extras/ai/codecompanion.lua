@@ -1,4 +1,4 @@
-local p = require("josh.utils.path")
+local p = require("utils.path")
 
 return {
   {

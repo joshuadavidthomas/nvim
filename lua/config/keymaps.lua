@@ -28,9 +28,9 @@ map("v", "<A-K>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 map("n", "yY", ":%y<cr>", { desc = "Yank entire buffer" })
 
 -- copy github permalink
-map({ "n", "v" }, "<leader>gl", require("josh.utils.git").copy_gh_permalink, { desc = "Copy GH permalink to file" })
+map({ "n", "v" }, "<leader>gl", require("utils.git").copy_gh_permalink, { desc = "Copy GH permalink to file" })
 
--- taken from `folke/dot`, license included in the `.licesnes` directory at the root of the repo
+-- taken from `folke/dot`, license included in the `.licenses` directory at the root of the repo
 -- https://github.com/folke/dot/blob/f5ba84b3a73a4e2aa4648c14707ce6847c29169b/nvim/lua/config/keymaps.lua#L5-L38
 local nav = {
   h = "Left",
@@ -59,7 +59,7 @@ local function navigate(dir)
   end
 end
 
-require("josh.utils").set_user_var("IS_NVIM", true)
+require("utils.init").set_user_var("IS_NVIM", true)
 
 -- Move to window using the movement keys
 for key, dir in pairs(nav) do

@@ -1,25 +1,39 @@
+-- copied from `LazyVim/LazyVim`, license included in the `.licenses` directory at the root of the repo
+
 return {
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
-        "svelte",
-      })
-    end,
-  },
+  -- depends on the typescript
+  -- just including this to make sure it's noted
+  { import = "plugins.lang.typescript" },
   {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        svelte = {},
+        svelte = {
+          keys = {
+            {
+              "<leader>co",
+              LazyVim.lsp.action["source.organizeImports"],
+              desc = "Organize Imports",
+            },
+          },
+          capabilities = {
+            workspace = {
+              didChangeWatchedFiles = vim.fn.has("nvim-0.10") == 0 and { dynamicRegistration = true },
+            },
+          },
+        },
       },
     },
   },
   {
-    "williamboman/mason.nvim",
+    "neovim/nvim-lspconfig",
     opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
-        "svelte-language-server",
+      LazyVim.extend(opts.servers.vtsls, "settings.vtsls.tsserver.globalPlugins", {
+        {
+          name = "typescript-svelte-plugin",
+          location = LazyVim.get_pkg_path("svelte-language-server", "/node_modules/typescript-svelte-plugin"),
+          enableForWorkspaceTypeScriptVersions = true,
+        },
       })
     end,
   },

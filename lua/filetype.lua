@@ -1,4 +1,4 @@
-local dj = require("josh.utils.django")
+local dj = require("utils.django")
 
 -- when opening HTML file check if in Django project and set filetype automatically
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
@@ -17,6 +17,7 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 
 vim.filetype.add({
   extension = {
+    ebnf = "ebnf",
     djhtml = "htmldjango",
   },
   pattern = {

@@ -1,4 +1,5 @@
--- copied from `LazyVim/LazyVim`, license included in the `.licesnes` directory at the root of the repo
+-- copied from `LazyVim/LazyVim`, license included in the `.licenses` directory at the root of the repo
+
 local M = {}
 
 ---@type table<string,true>

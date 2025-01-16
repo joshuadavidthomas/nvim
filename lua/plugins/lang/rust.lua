@@ -1,22 +1,4 @@
-if lazyvim_docs then
-  -- LSP Server to use for Rust.
-  -- Set to "bacon-ls" to use bacon-ls instead of rust-analyzer.
-  -- only for diagnostics. The rest of LSP support will still be
-  -- provided by rust-analyzer.
-  vim.g.lazyvim_rust_diagnostics = "bacon-ls"
-end
-
-local diagnostics = vim.g.lazyvim_rust_diagnostics or "rust-analyzer"
-
 return {
-  -- TODO: figure out what this is doing
-  recommended = function()
-    return LazyVim.extras.wants({
-      ft = "rust",
-      root = { "Cargo.toml", "rust-project.json" },
-    })
-  end,
-  -- LSP for Cargo.toml
   {
     "Saecki/crates.nvim",
     event = { "BufRead Cargo.toml" },
@@ -33,24 +15,6 @@ return {
         hover = true,
       },
     },
-  },
-  -- Add Rust & related to treesitter
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = { ensure_installed = { "rust", "ron" } },
-  },
-
-  -- Ensure Rust debugger is installed
-  {
-    "williamboman/mason.nvim",
-    optional = true,
-    opts = function(_, opts)
-      opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, { "codelldb" })
-      if diagnostics == "bacon-ls" then
-        vim.list_extend(opts.ensure_installed, { "bacon" })
-      end
-    end,
   },
   {
     "mrcjkb/rustaceanvim",
@@ -76,12 +40,10 @@ return {
                 enable = true,
               },
             },
-            -- Add clippy lints for Rust if using rust-analyzer
-            checkOnSave = diagnostics == "rust-analyzer",
-            -- Enable diagnostics if using rust-analyzer
+            checkOnSave = true,
             diagnostics = {
               disabled = { "macro-error" },
-              enable = diagnostics == "rust-analyzer",
+              enable = true,
             },
             procMacro = {
               enable = true,
@@ -117,14 +79,10 @@ return {
       end
     end,
   },
-  -- Correctly setup lspconfig for Rust 🚀
   {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        bacon_ls = {
-          enabled = diagnostics == "bacon-ls",
-        },
         rust_analyzer = { enabled = false },
       },
     },
