@@ -1,3 +1,5 @@
+-- copied from `LazyVim/LazyVim`, license included in the `.licenses` directory at the root of the repo
+
 if not vim.g.vscode then
   return {}
 end
