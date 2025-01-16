@@ -18,6 +18,7 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 vim.filetype.add({
   extension = {
     ebnf = "ebnf",
+    dhtml = "htmldjango",
     djhtml = "htmldjango",
   },
   pattern = {
