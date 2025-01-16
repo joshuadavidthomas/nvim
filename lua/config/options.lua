@@ -17,3 +17,6 @@ g.lazyvim_python_lsp = "basedpyright"
 
 -- disable snacks.animate
 g.snacks_animate = false
+
+-- use snacks.picker
+g.lazyvim_picker = "snacks"
