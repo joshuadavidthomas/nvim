@@ -18,6 +18,7 @@ M.plugin = {
         enabled = true,
         ft = {
           "astro",
+          "blade",
           "css",
           "heex",
           "html",
