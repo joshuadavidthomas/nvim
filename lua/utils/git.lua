@@ -241,4 +241,56 @@ function M.copy_gh_permalink()
   end
 end
 
+--- Get the default branch name for a git repository
+--- @param path string: The path of the file within the git repository
+--- @return string|nil: The name of the default branch (e.g. "main" or "master"), or nil if not found
+function M.get_default_branch(path)
+  local git_dir = M.find_git_dir(path)
+  if git_dir then
+    -- First try to get it from the config
+    local config = M.get_git_config(path)
+    if config and config.init and config.init.defaultBranch then
+      return config.init.defaultBranch
+    end
+
+    -- If not in config, try to get it from the remote HEAD ref
+    local packed_refs_path = p.join(git_dir, "packed-refs")
+    local head_ref_path = p.join(git_dir, "refs", "remotes", "origin", "HEAD")
+    
+    -- Try packed-refs first
+    if p.is_file(packed_refs_path) then
+      local content = f.read_file(packed_refs_path)
+      if content then
+        for line in content:gmatch("[^\r\n]+") do
+          local ref_match = line:match("refs/remotes/origin/([^/]+)%s+refs/remotes/origin/HEAD")
+          if ref_match then
+            return ref_match
+          end
+        end
+      end
+    end
+
+    -- Try the HEAD ref file
+    if p.is_file(head_ref_path) then
+      local content = f.read_file(head_ref_path)
+      if content then
+        local branch = content:match("ref: refs/remotes/origin/([^\n]+)")
+        if branch then
+          return branch
+        end
+      end
+    end
+
+    -- Fallback to git command if all else fails
+    local result = vim.fn.system("git -C " .. vim.fn.shellescape(vim.fn.fnamemodify(path, ":h")) .. " symbolic-ref refs/remotes/origin/HEAD")
+    if vim.v.shell_error == 0 then
+      local branch = result:match("refs/remotes/origin/([^\n]+)")
+      if branch then
+        return branch
+      end
+    end
+  end
+  return nil
+end
+
 return M
