@@ -256,7 +256,7 @@ function M.get_default_branch(path)
     -- If not in config, try to get it from the remote HEAD ref
     local packed_refs_path = p.join(git_dir, "packed-refs")
     local head_ref_path = p.join(git_dir, "refs", "remotes", "origin", "HEAD")
-    
+
     -- Try packed-refs first
     if p.is_file(packed_refs_path) then
       local content = f.read_file(packed_refs_path)
@@ -282,7 +282,9 @@ function M.get_default_branch(path)
     end
 
     -- Fallback to git command if all else fails
-    local result = vim.fn.system("git -C " .. vim.fn.shellescape(vim.fn.fnamemodify(path, ":h")) .. " symbolic-ref refs/remotes/origin/HEAD")
+    local result = vim.fn.system(
+      "git -C " .. vim.fn.shellescape(vim.fn.fnamemodify(path, ":h")) .. " symbolic-ref refs/remotes/origin/HEAD"
+    )
     if vim.v.shell_error == 0 then
       local branch = result:match("refs/remotes/origin/([^\n]+)")
       if branch then
