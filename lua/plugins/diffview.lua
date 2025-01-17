@@ -15,7 +15,7 @@ return {
         local git = require("utils.git")
         local default_branch = git.get_default_branch(vim.fn.expand("%:p"))
         if default_branch then
-          vim.cmd("DiffviewOpen " .. default_branch .. "...HEAD")
+          vim.cmd("DiffviewOpen " .. default_branch .. "..HEAD")
         else
           vim.notify("Could not determine default branch", vim.log.levels.WARN)
         end
