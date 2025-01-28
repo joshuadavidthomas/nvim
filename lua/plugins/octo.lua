@@ -37,24 +37,23 @@ return {
       outdated_icon = "󰥕 ",
     }
   end,
-  keys = function()
-    return {
-      { "<leader>gi", "<cmd>Octo issue search<cr>", desc = "search [i]ssues" },
-      { "<leader>go", "<cmd>Octo<cr>", desc = "find [o]cto command" },
-      { "<leader>gps", "<cmd>Octo pr search<cr>", desc = "[s]earch PRs" },
-      { "<leader>gpm", "<cmd>Octo pr merge<cr>", desc = "[m]erge PR" },
-      { "<leader>gpo", "<cmd>Octo pr<cr>", desc = "[o]pen PR" },
-      { "<leader>gpr", "<cmd>Octo review start", desc = "start PR [r]eview" },
-      { "<leader>gpR", "<cmd>Octo review submit<cr>", desc = "submit [R]eview" },
-      { "<leader>a", "", desc = "+[a]assignee", ft = "octo" },
-      { "<leader>c", "", desc = "+[c]omment/code", ft = "octo" },
-      { "<leader>l", "", desc = "+[l]abel", ft = "octo" },
-      { "<leader>i", "", desc = "+[i]ssue", ft = "octo" },
-      { "<leader>r", "", desc = "+[r]eact", ft = "octo" },
-      { "<leader>p", "", desc = "+[p]r", ft = "octo" },
-      { "<leader>v", "", desc = "+re[v]iew", ft = "octo" },
-      { "@", "@<C-x><C-o>", mode = "i", ft = "octo", silent = true },
-      { "#", "#<C-x><C-o>", mode = "i", ft = "octo", silent = true },
-    }
-  end,
+  -- stylua: ignore
+  keys = {
+    { "<leader>gi", "<cmd>Octo issue search<cr>", desc = "search [i]ssues" },
+    { "<leader>go", "<cmd>Octo<cr>", desc = "find [o]cto command" },
+    { "<leader>gps", "<cmd>Octo pr search<cr>", desc = "[s]earch PRs" },
+    { "<leader>gpm", "<cmd>Octo pr merge<cr>", desc = "[m]erge PR" },
+    { "<leader>gpo", "<cmd>Octo pr<cr>", desc = "[o]pen PR" },
+    { "<leader>gpr", function() vim.cmd("Octo review start") end, desc = "start PR [r]eview" },
+    { "<leader>gpR", "<cmd>Octo review submit<cr>", desc = "submit [R]eview" },
+    { "<leader>a", "", desc = "+[a]assignee", ft = "octo" },
+    { "<leader>c", "", desc = "+[c]omment/code", ft = "octo" },
+    { "<leader>l", "", desc = "+[l]abel", ft = "octo" },
+    { "<leader>i", "", desc = "+[i]ssue", ft = "octo" },
+    { "<leader>r", "", desc = "+[r]eact", ft = "octo" },
+    { "<leader>p", "", desc = "+[p]r", ft = "octo" },
+    { "<leader>v", "", desc = "+re[v]iew", ft = "octo" },
+    { "@", "@<C-x><C-o>", mode = "i", ft = "octo", silent = true },
+    { "#", "#<C-x><C-o>", mode = "i", ft = "octo", silent = true },
+  },
 }
