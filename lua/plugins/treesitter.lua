@@ -1,5 +1,6 @@
 return {
   "nvim-treesitter/nvim-treesitter",
+  event = "LazyFile",
   opts = {
     ensure_installed = {
       "astro",
@@ -12,6 +13,7 @@ return {
       "gitattributes",
       "gitcommit",
       "gitignore",
+      "html",
       "htmldjango",
       "json5",
       "just",
@@ -28,6 +30,8 @@ return {
       "toml",
       "tsx",
       "typescript",
+      "vim",
+      "vimdoc",
       "yaml",
     },
   },
