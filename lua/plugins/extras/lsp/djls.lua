@@ -3,6 +3,7 @@ local p = require("utils.path")
 return {
   {
     "joshuadavidthomas/django-language-server",
+    ft = "htmldjango",
   },
   -- {
   --   "neovim/nvim-lspconfig",
