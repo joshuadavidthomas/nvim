@@ -1,6 +1,7 @@
 local f = require("utils.file")
 local p = require("utils.path")
 local s = require("utils.string")
+local u = require("utils")
 local v = require("utils.vim")
 
 local M = {}
@@ -80,22 +81,22 @@ end
 --- @return table: A table of the config options from the git config file.
 function M.parse_git_config(git_config)
   local config = {}
-  local section
-  local subname
+  local section = nil
+  local subname = nil
   for line in io.lines(git_config) do
     if line:match("^%[") then
       section, subname = line:match('^%[([%w]+)%s*"?([%w_-]*)"?%]$')
-      if subname and subname ~= "" then
-        if not config[section] then
+      if section then -- Only proceed if we got a valid section
+        if subname and subname ~= "" then
+          config[section] = config[section] or {}
+          config[section][subname] = {}
+          section = config[section][subname]
+        else
           config[section] = {}
+          section = config[section]
         end
-        config[section][subname] = {}
-        section = config[section][subname]
-      else
-        config[section] = {}
-        section = config[section]
       end
-    elseif line:match("^%s*[%w]") then
+    elseif section and line:match("^%s*[%w]") then -- Only parse if we have a valid section
       local key, value = line:match("^%s*([^=]+)%s*=%s*(.+)%s*$")
       if key and value then
         key = s.trim(key)
@@ -111,9 +112,21 @@ end
 --- @param startpath string: The path of the file.
 --- @return table|nil: A table of patterns from the .gitignore file, or nil if not found or not applicable.
 function M.get_gitignore_patterns(startpath)
+  local patterns = {}
+
+  -- global ignores
+  local git_config_dir = p.platformdirs("git").user_config_dir
+  local global_gitignore = p.join(git_config_dir, "ignore")
+  if p.is_file(global_gitignore) then
+    local global_patterns = M.parse_gitignore(global_gitignore)
+    for _, pattern in ipairs(global_patterns) do
+      table.insert(patterns, pattern)
+    end
+  end
+
+  -- project specific
   local git_root = M.find_git_ancestor(startpath)
   if git_root then
-    local patterns = {}
     p.search_ancestors(startpath, function(path)
       local gitignore_path = p.join(path, ".gitignore")
       if p.is_file(gitignore_path) then
@@ -124,27 +137,54 @@ function M.get_gitignore_patterns(startpath)
         return path == git_root
       end
     end)
-    return patterns
   end
+
+  if #patterns > 0 then
+    return u.dedupe(patterns)
+  end
+  return nil
 end
 
 --- Read and parse the .git/config file associated with a file's git repository.
 --- @param path string: The path of the file.
 --- @return table|nil: The parsed git config as a nested table, or nil if not found or unreadable.
 function M.get_git_config(path)
-  -- TODO: add global config? right now this is just used to grab the remote urls for `M.get_remote_url`
-  -- but it could be useful to include the global git config in ~/.config/git/config as well. i'll wait until
-  -- a need arises before tackling that.
+  local config = {}
+
+  -- global config
+  local git_config_dir = p.platformdirs("git").user_config_dir
+  local global_config = p.join(git_config_dir, "config")
+  if p.is_file(global_config) then
+    local global_settings = M.parse_git_config(global_config)
+    for section, values in pairs(global_settings) do
+      config[section] = values
+    end
+  end
+
+  -- project specific
   local git_root = M.find_git_ancestor(path)
   if git_root then
     local git_dir = M.find_git_dir(path)
     if git_dir then
       local git_config_path = p.join(git_dir, "config")
       if p.is_file(git_config_path) then
-        return M.parse_git_config(git_config_path)
+        local repo_settings = M.parse_git_config(git_config_path)
+        -- Merge repo settings, overriding global settings where there are conflicts
+        for section, values in pairs(repo_settings) do
+          if type(values) == "table" then
+            config[section] = config[section] or {}
+            for key, value in pairs(values) do
+              config[section][key] = value
+            end
+          else
+            config[section] = values
+          end
+        end
       end
     end
   end
+
+  return next(config) and config or nil
 end
 
 --- Retrieve the URL of a specified git remote from the cached git config.
@@ -153,15 +193,21 @@ end
 --- @return string|nil: The URL of the specified remote, or nil if not found.
 function M.get_remote_url(path, remote_name)
   local config = M.get_git_config(path)
-  if config then
-    local remote = config.remote
-    if remote or remote[remote_name] then
-      local remote_config = remote[remote_name]
-      if remote_config or remote_config.url then
-        return remote_config.url
-      end
-    end
+  if not config then
+    return nil
   end
+
+  local remote = config.remote
+  if not remote then
+    return nil
+  end
+
+  local remote_config = remote[remote_name]
+  if not remote_config then
+    return nil
+  end
+
+  return remote_config.url
 end
 
 --- Get the current commit SHA
