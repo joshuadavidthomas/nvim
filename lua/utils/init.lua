@@ -25,6 +25,21 @@ function M.base64(data)
   return b64
 end
 
+---@generic T
+---@param list T[]
+---@return T[]
+function M.dedupe(list)
+  local ret = {}
+  local seen = {}
+  for _, v in ipairs(list) do
+    if not seen[v] then
+      table.insert(ret, v)
+      seen[v] = true
+    end
+  end
+  return ret
+end
+
 function M.set_user_var(key, value)
   io.write(string.format("\027]1337;SetUserVar=%s=%s\a", key, M.base64(value)))
 end
