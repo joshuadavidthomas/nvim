@@ -35,6 +35,19 @@ return {
       },
       menu = {
         draw = {
+          components = {
+            kind_icon = {
+              ellipsis = false,
+              text = function(ctx)
+                local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
+                return kind_icon
+              end,
+              highlight = function(ctx)
+                local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+                return hl
+              end,
+            },
+          },
           treesitter = { "lsp" },
         },
       },
@@ -56,9 +69,10 @@ return {
         git = {
           module = "blink-cmp-git",
           name = "Git",
-          opts = {
-            -- options for the blink-cmp-git
-          },
+          enabled = function()
+            return vim.tbl_contains({ "octo", "gitcommit", "markdown" }, vim.bo.filetype)
+          end,
+          opts = {},
         },
       },
     },
