@@ -5,7 +5,6 @@ return {
     { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" },
   },
   build = ":MasonUpdate",
-  -- opts_extend = { "ensure_installed" },
   opts = {},
   ---@param opts MasonSettings | {ensure_installed: string[]}
   config = function(_, opts)
