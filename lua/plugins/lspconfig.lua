@@ -1,3 +1,5 @@
+local icons = require("utils.icons")
+
 return {
   "neovim/nvim-lspconfig",
   event = "LazyFile",
@@ -5,7 +7,16 @@ return {
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
     "saghen/blink.cmp",
-    { "j-hui/fidget.nvim", opts = {} },
+    {
+      "j-hui/fidget.nvim",
+      opts = {
+        notification = {
+          window = {
+            winblend = 0,
+          },
+        },
+      },
+    },
   },
   opts = {
     capabilities = {
@@ -19,16 +30,12 @@ return {
     diagnostics = {
       severity_sort = true,
       signs = {
-        text = function()
-          local icons = require("utils.icons")
-
-          return {
-            [vim.diagnostic.severity.ERROR] = icons.diagnostics.Error,
-            [vim.diagnostic.severity.WARN] = icons.diagnostics.Warn,
-            [vim.diagnostic.severity.HINT] = icons.diagnostics.Hint,
-            [vim.diagnostic.severity.INFO] = icons.diagnostics.Info,
-          }
-        end,
+        text = {
+          [vim.diagnostic.severity.ERROR] = icons.diagnostics.Error,
+          [vim.diagnostic.severity.WARN] = icons.diagnostics.Warn,
+          [vim.diagnostic.severity.HINT] = icons.diagnostics.Hint,
+          [vim.diagnostic.severity.INFO] = icons.diagnostics.Info,
+        },
       },
       underline = true,
       update_in_insert = false,
@@ -45,55 +52,75 @@ return {
       enabled = true,
       exclude = {}, -- filetypes for which you don't want to enable inlay hints
     },
-    servers = {
-      lua_ls = {},
+    codelens = {
+      enabled = false,
     },
+    servers = {
+      lua_ls = {
+        settings = {
+          Lua = {
+            workspace = {
+              checkThirdParty = false,
+            },
+            codeLens = {
+              enable = true,
+            },
+            completion = {
+              callSnippet = "Replace",
+            },
+            doc = {
+              privateName = { "^_" },
+            },
+            hint = {
+              enable = true,
+              setType = false,
+              paramType = true,
+              paramName = "Disable",
+              semicolon = "Disable",
+              arrayIndex = "Disable",
+            },
+          },
+        },
+      },
+    },
+    -- Optional format on save with the LSP instead of conform
+    -- format_on_save = {
+    --   enabled = false,
+    --   timeout_ms = 3000,
+    -- },
   },
   config = function(_, opts)
-    vim.api.nvim_create_autocmd("LspAttach", {
-      callback = function(args)
-        local buffer = args.buf ---@type number
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-        if client then
-          local Keys = require("lazy.core.handler.keys")
-          local lsp_keymaps = require("lsp.keymaps")
+    local lsp = require("lsp")
 
-          local keymaps = lsp_keymaps.resolve(buffer)
+    lsp.setup(opts)
 
-          for _, keys in pairs(keymaps) do
-            local has = not keys.has or lsp_keymaps.has(buffer, keys.has)
-            local cond = not (keys.cond == false or ((type(keys.cond) == "function") and not keys.cond()))
-
-            if has and cond then
-              local opts = Keys.opts(keys)
-              opts.cond = nil
-              opts.has = nil
-              opts.silent = opts.silent ~= false
-              opts.buffer = buffer
-              vim.keymap.set(keys.mode or "n", keys.lhs, keys.rhs, opts)
-            end
-          end
-        end
-      end,
-    })
-
+    -- Extract servers to ensure they're installed
     local ensure_installed = {} ---@type string[]
     for server, _ in pairs(opts.servers) do
       table.insert(ensure_installed, server)
     end
     ensure_installed = require("utils").dedupe(ensure_installed)
 
+    -- Setup mason-lspconfig with a simplified handler
     require("mason-lspconfig").setup({
       automatic_installation = true,
       ensure_installed = ensure_installed,
       handlers = {
         function(server)
-          local config = opts.servers[server] or {}
-          local capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
-          -- This handles overriding only values explicitly passed
-          -- by the server configuration above. Useful when disabling
-          -- certain features of an LSP (for example, turning off formatting for ts_ls)
-          config.capabilities = vim.tbl_deep_extend("force", {}, capabilities, config.capabilities or {})
+          -- Get server-specific config or empty table
+          local config = vim.deepcopy(opts.servers[server] or {})
+          
+          -- Add capabilities from blink
+          local capabilities = vim.lsp.protocol.make_client_capabilities()
+          local has_blink, blink = pcall(require, "blink.cmp")
+          if has_blink then
+            capabilities = vim.tbl_deep_extend("force", capabilities, blink.get_lsp_capabilities())
+          end
+          
+          -- Merge with any server-specific capabilities
+          config.capabilities = vim.tbl_deep_extend("force", capabilities, config.capabilities or {})
+          
+          -- Setup the server
           require("lspconfig")[server].setup(config)
         end,
       },

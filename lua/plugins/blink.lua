@@ -5,6 +5,10 @@ return {
   event = "InsertEnter",
   dependencies = {
     "rafamadriz/friendly-snippets",
+    {
+      "Kaiser-Yang/blink-cmp-git",
+      dependencies = { "nvim-lua/plenary.nvim" },
+    },
   },
   opts_extend = {
     "sources.completion.enabled_providers",
@@ -47,8 +51,19 @@ return {
       ["<C-y>"] = { "select_and_accept" },
     },
     sources = {
-     cmdline = {},
-     default = { 'lsp', 'path', 'snippets', 'buffer' },
+      default = { "git", "lsp", "path", "snippets", "buffer" },
+      providers = {
+        git = {
+          module = "blink-cmp-git",
+          name = "Git",
+          opts = {
+            -- options for the blink-cmp-git
+          },
+        },
+      },
     },
-  }
+    cmdline = {
+      enabled = false,
+    },
+  },
 }

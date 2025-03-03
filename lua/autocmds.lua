@@ -34,7 +34,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 -- close some filetypes with <q>
 vim.api.nvim_create_autocmd("FileType", {
-  group = augroup("close_with_q"),
+  group = augroup("close-with-q"),
   pattern = {
     "checkhealth",
     "help",
@@ -54,5 +54,20 @@ vim.api.nvim_create_autocmd("FileType", {
         desc = "Quit buffer",
       })
     end)
+  end,
+})
+
+-- when opening HTML file check if in Django project and set filetype automatically
+vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
+  group = augroup("django-filetype-detection"),
+  pattern = "*.html",
+  callback = function(args)
+    local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
+    if require("utils.projects").is_project("django", file_dir) then
+      vim.bo[args.buf].filetype = "htmldjango"
+      return
+    end
+
+    vim.bo[args.buf].filetype = "html"
   end,
 })

@@ -1,8 +1,4 @@
 -- Lightweight yet powerful formatter plugin for Neovim
---
---
--- o
---
 return {
   {
     "stevearc/conform.nvim",
@@ -33,10 +29,18 @@ return {
 
       local mr = require("mason-registry")
 
+      local formatter_to_mason = {
+        -- Python
+        ruff_fix = "ruff",
+        ruff_format = "ruff",
+      }
+
       local ensure_installed = {} ---@type string[]
       for _, formatters in pairs(opts.formatters_by_ft) do
         for _, formatter in ipairs(formatters) do
-          table.insert(ensure_installed, formatter)
+          -- If there's a mapping, use it, otherwise use the formatter name
+          local package_name = formatter_to_mason[formatter] or formatter
+          table.insert(ensure_installed, package_name)
         end
       end
       ensure_installed = require("utils").dedupe(ensure_installed)
@@ -54,8 +58,8 @@ return {
 
       mr.refresh(function()
         for _, tool in ipairs(ensure_installed) do
-          local p = mr.get_package(tool)
-          if not p:is_installed() then
+          local ok, p = pcall(mr.get_package, tool)
+          if ok and p and not p:is_installed() then
             p:install()
           end
         end

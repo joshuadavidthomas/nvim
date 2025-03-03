@@ -167,17 +167,118 @@ return {
     "echasnovski/mini.pairs",
     event = "LazyFile",
     opts = {
+      -- Which Vim modes to enable autopairs in
       modes = { insert = true, command = true, terminal = false },
-      -- skip autopair when next character is one of these
+
+      -- Skip autopair when next character is one of these (prevents adding pairs before certain characters)
+      -- Pattern matches alphanumeric chars, percent, single quote, opening square bracket, double quote, dot, backtick, dollar
+      -- Example: typing '(' before 'w' will only insert '(', not '()'
       skip_next = [=[[%w%%%'%[%"%.%`%$]]=],
-      -- skip autopair when the cursor is inside these treesitter nodes
+
+      -- Skip autopair when the cursor is inside these treesitter syntax nodes
+      -- Common values: "string", "comment", "parameter", "variable", etc.
+      -- Can be checked with :lua print(vim.inspect(vim.treesitter.get_captures_at_cursor(0)))
       skip_ts = { "string" },
-      -- skip autopair when next character is closing pair
-      -- and there are more closing pairs than opening pairs
+
+      -- Skip autopair when next character is closing pair and there are more closing pairs than opening pairs
+      -- Helps avoid situations like: (|) typing ( would result in ((|)) without this option
       skip_unbalanced = true,
-      -- better deal with markdown code blocks
+
+      -- Special handling for markdown code blocks with backticks
+      -- When you type ``` at the start of a line, it will create a code block
       markdown = true,
     },
+    config = function(_, opts)
+      Snacks.toggle({
+        name = "Mini Pairs",
+        get = function()
+          return not vim.g.minipairs_disable
+        end,
+        set = function(state)
+          vim.g.minipairs_disable = not state
+        end,
+      }):map("<leader>up")
+
+      local pairs = require("mini.pairs")
+
+      pairs.setup(opts)
+
+      local open = pairs.open
+      ---@diagnostic disable-next-line: duplicate-set-field
+      pairs.open = function(pair, neigh_pattern)
+        -- If we're in command mode and typing something, use default behavior
+        -- This uses the original pairs.open function to maintain normal pair completion
+        -- when typing in the command line (:) - the ~= "" check ensures we're actually
+        -- typing a command and not just in command mode with an empty line
+        if vim.fn.getcmdline() ~= "" then
+          return open(pair, neigh_pattern)
+        end
+
+        -- Opening and closing chars, current line, cursor pos, char before/after cursor
+        local opening, closing = pair:sub(1, 1), pair:sub(2, 2)
+        local line = vim.api.nvim_get_current_line()
+        local cursor = vim.api.nvim_win_get_cursor(0)
+        local next = line:sub(cursor[2] + 1, cursor[2] + 1)
+        local before = line:sub(1, cursor[2])
+
+        -- Special handling for markdown code blocks
+        -- When typing the third backtick (`) at the start of a line in markdown files,
+        -- this automatically creates a proper code block with triple backticks and places
+        -- the cursor in between for a better markdown editing experience
+        -- Example: typing ``` will result in:
+        -- ```
+        -- | (cursor here)
+        -- ```
+        if opts.markdown and opening == "`" and vim.bo.filetype == "markdown" and before:match("^%s*``") then
+          return "`\n```" .. vim.api.nvim_replace_termcodes("<up>", true, true, true)
+        end
+
+        -- Skip auto-closing when next character is in the skip_next pattern
+        -- This prevents adding closing pairs when typing in front of certain characters,
+        -- which is useful when you want to insert an opening character before something
+        -- without automatically adding its pair. For example, when typing "(" before "word"
+        -- you probably just want "(word" rather than "(word)".
+        -- The next ~= "" check ensures we only apply this when there's actually a character after the cursor
+        if opts.skip_next and next ~= "" and next:match(opts.skip_next) then
+          return opening
+        end
+
+        -- Skip auto-closing when inside specific treesitter syntax nodes
+        -- This uses treesitter's syntax awareness to prevent auto-pairing in contexts
+        -- where it's usually not wanted, like inside strings or comments
+        -- When inside a "string" node, for example, typing a quote usually indicates
+        -- you want to escape a quote, not add a new pair of quotes
+        -- The pcall protects against errors if treesitter is not available or fails
+        if opts.skip_ts and #opts.skip_ts > 0 then
+          local ok, captures = pcall(vim.treesitter.get_captures_at_pos, 0, cursor[1] - 1, math.max(cursor[2] - 1, 0))
+          for _, capture in ipairs(ok and captures or {}) do
+            if vim.tbl_contains(opts.skip_ts, capture.capture) then
+              return opening
+            end
+          end
+        end
+
+        -- Skip auto-closing when it would create unbalanced pairs
+        -- This is important when typing an opening character right before its matching closing one
+        -- For example, with cursor at | in "(|)", typing ( would result in "((|))" without this check,
+        -- but with this check it would result in "(|)" because we detect the line already has more
+        -- closing brackets than opening ones
+        -- The closing ~= opening check excludes identical pairs like '' or "" from this logic
+        if opts.skip_unbalanced and next == closing and closing ~= opening then
+          local _, count_open = line:gsub(vim.pesc(pair:sub(1, 1)), "")
+          local _, count_close = line:gsub(vim.pesc(pair:sub(2, 2)), "")
+          if count_close > count_open then
+            return opening
+          end
+        end
+
+        -- Default behavior: add both opening and closing characters
+        -- If none of the skip conditions above apply, we use the original mini.pairs
+        -- open function which inserts both characters of the pair and places
+        -- the cursor between them (e.g., typing "(" inserts "()" with cursor between)
+        return open(pair, neigh_pattern)
+      end
+    end,
   },
   -- Neovim Lua plugin with fast and feature-rich surround actions.
   {

@@ -31,6 +31,7 @@ M.setup = function()
     },
     spec = {
       { import = "plugins" },
+      { import = "plugins.lang" },
     },
   })
   require("config").setup()

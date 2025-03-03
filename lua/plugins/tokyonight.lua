@@ -3,7 +3,10 @@ return {
   "folke/tokyonight.nvim",
   lazy = false,
   priority = 1000,
-  opts = { style = "moon" },
+  opts = {
+    transparent = true,
+    style = "moon",
+  },
   init = function()
     require("tokyonight").load()
   end,

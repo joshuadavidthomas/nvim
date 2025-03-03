@@ -5,7 +5,7 @@ return {
     ---@type conform.setupOpts
     opts = {
       formatters_by_ft = {
-        python = { "ruff" },
+        python = { "ruff_fix", "ruff_format" },
       },
     },
   },
@@ -24,7 +24,11 @@ return {
         },
       },
       setup = {
-        ["ruff"] = function() end,
+        ["ruff"] = function()
+          require("lsp").on_attach(function(client, _)
+            client.server_capabilities.hoverProvider = false
+          end, "ruff")
+        end,
         ["taplo"] = function() end,
       },
     },

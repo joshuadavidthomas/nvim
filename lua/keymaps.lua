@@ -46,15 +46,19 @@ vim.keymap.set("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
 -- lazy
 vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
+-- format
+vim.keymap.set("n", "<leader>cf", function() require("utils.format").format() end, { desc = "Format Document" })
+
 -- commenting
 vim.keymap.set("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
 vim.keymap.set("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Above" })
 
 -- diagnostic
 local diagnostic_goto = function(next, severity)
+  local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
   severity = severity and vim.diagnostic.severity[severity] or nil
   return function()
-    next({ severity = severity })
+    go({ severity = severity })
   end
 end
 vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
@@ -65,3 +69,37 @@ vim.keymap.set("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error"
 vim.keymap.set("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
 vim.keymap.set("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 Snacks.toggle.diagnostics():map("<leader>ud")
+
+-- cursor movement in Wezterm
+if require("utils.term").is_wezterm then
+  local nav = {
+    h = "Left",
+    j = "Down",
+    k = "Up",
+    l = "Right",
+  }
+
+  local function navigate(dir)
+    return function()
+      local win = vim.api.nvim_get_current_win()
+      vim.cmd.wincmd(dir)
+      local pane = vim.env.WEZTERM_PANE
+      if pane and win == vim.api.nvim_get_current_win() then
+        local pane_dir = nav[dir]
+        vim.system({ "wezterm", "cli", "activate-pane-direction", pane_dir }, { text = true }, function(p)
+          if p.code ~= 0 then
+            vim.notify("Failed to move to pane " .. pane_dir .. "\n" .. p.stderr, vim.log.levels.ERROR, { title = "Wezterm" })
+          end
+        end)
+      end
+    end
+  end
+
+  require("utils.term").set_user_var("IS_NVIM", true)
+
+  -- Move to window using the movement keys
+  for key, dir in pairs(nav) do
+    vim.keymap.set("n", "<" .. dir .. ">", navigate(key))
+    vim.keymap.set("n", "<C-" .. key .. ">", navigate(key))
+  end
+end

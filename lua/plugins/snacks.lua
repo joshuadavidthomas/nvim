@@ -153,7 +153,7 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "<leader>n",       function() Snacks.notifier.show_history() end,                          desc = "Notification History" },
+      { "<leader>dn",       function() Snacks.notifier.show_history() end,                          desc = "Notification History" },
     },
   },
   {
@@ -188,6 +188,24 @@ return {
 
       Snacks.toggle.zen():map("<leader>uz")
       Snacks.toggle.zoom():map("<leader>uZ")
+    end,
+  },
+  {
+    "folke/snacks.nvim",
+    ---@type snacks.Config
+    opts = {
+      words = { enabled = true },
+    },
+    -- stylua: ignore
+    config = function(_, opts)
+      local Snacks = require("snacks")
+      Snacks.setup(opts)
+      
+      Snacks.toggle({ 
+        name = "Words",
+        get = function() return Snacks.words.is_enabled() end,
+        set = function(enabled) Snacks.words.toggle(enabled) end 
+      }):map("<leader>uw")
     end,
   },
 }
