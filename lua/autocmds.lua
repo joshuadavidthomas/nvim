@@ -62,12 +62,12 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
   group = augroup("html-filetype-detection"),
   pattern = "*.html",
   callback = function(args)
-    local projects = require("projects")
+    local lang = require("lang")
 
     local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
 
-    local is_django = projects.is_project("django", file_dir)
-    local is_11ty, metadata = projects.is_project("11ty", file_dir)
+    local is_django = lang.is_project("django", file_dir)
+    local is_11ty, metadata = lang.is_project("11ty", file_dir)
 
     if is_django then
       vim.bo[args.buf].filetype = "htmldjango"
@@ -76,7 +76,7 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
 
     if is_11ty and metadata then
       local engine = metadata.html or "njk"
-      local filetype = require("projects.11ty").template_engine_to_filetype[engine] or "html"
+      local filetype = require("lang.11ty").template_engine_to_filetype[engine] or "html"
       vim.bo[args.buf].filetype = filetype
       return
     end
@@ -91,7 +91,7 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
   callback = function(args)
     local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
 
-    local is_11ty, metadata = require("projects").is_project("11ty", file_dir)
+    local is_11ty, metadata = require("lang.init").is_project("11ty", file_dir)
     if is_11ty and metadata then
       vim.bo[args.buf].filetype = "markdown"
 
@@ -105,7 +105,7 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
         callback = function()
           -- Delay slightly to ensure treesitter is initialized
           vim.defer_fn(function()
-            require("projects.11ty").setup_11ty_injections(args.buf, engine)
+            require("lang.11ty").setup_11ty_injections(args.buf, engine)
           end, 100)
         end,
       })

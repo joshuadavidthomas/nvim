@@ -85,7 +85,7 @@ function M.setup()
     end,
   })
 
-  local eleventy = require("projects.11ty")
+  local eleventy = require("lang.11ty")
   M.register("11ty", {
     ".eleventy.js",
     "eleventy.config.js",
