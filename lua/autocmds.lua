@@ -72,16 +72,58 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
   end,
 })
 
+-- Create a mapping of template engines to filetypes
+local template_engine_to_filetype = {
+  njk = "nunjucks",
+  liquid = "liquid",
+  hbs = "handlebars",
+  handlebars = "handlebars",
+  mustache = "mustache",
+  ejs = "ejs",
+  haml = "haml",
+  pug = "pug",
+  -- Add more mappings as needed
+}
+
+-- 11ty HTML file detection
 vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
-  group = augroup("11ty-filetype-detection"),
+  group = augroup("11ty-html-detection"),
   pattern = "*.html",
   callback = function(args)
     local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
-    if require("utils.projects").is_project("11ty", file_dir) then
-      vim.bo[args.buf].filetype = "nunjucks"
+    local is_11ty, metadata = require("utils.projects").is_project("11ty", file_dir)
+    
+    if is_11ty and metadata then
+      local engine = metadata.html or "njk"
+      local filetype = template_engine_to_filetype[engine] or "html"
+      vim.bo[args.buf].filetype = filetype
       return
     end
 
+    -- Not an 11ty project, continue with normal HTML filetype
     vim.bo[args.buf].filetype = "html"
+  end,
+})
+
+-- 11ty Markdown file detection
+vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
+  group = augroup("11ty-markdown-detection"),
+  pattern = "*.md",
+  callback = function(args)
+    local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
+    local is_11ty, metadata = require("utils.projects").is_project("11ty", file_dir)
+    
+    if is_11ty and metadata then
+      -- For markdown, we might want to use a combined filetype
+      local engine = metadata.markdown or "njk"
+      local template_filetype = template_engine_to_filetype[engine] or "html"
+      
+      -- Set a composite filetype if your editor supports it
+      vim.bo[args.buf].filetype = "markdown." .. template_filetype
+      return
+    end
+
+    -- Not an 11ty project, continue with normal Markdown filetype
+    vim.bo[args.buf].filetype = "markdown"
   end,
 })

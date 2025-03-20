@@ -22,7 +22,7 @@ end
 ---Check if a path is a specific project type
 ---@param project_type string The type of project to check for
 ---@param path string The directory path to check
----@return boolean is_project_type
+---@return boolean is_project_type, table? metadata
 function M.is_project(project_type, path)
   local config = project_types[project_type]
   if not config then
@@ -40,7 +40,10 @@ function M.is_project(project_type, path)
       if vim.fn.filereadable(marker_path) == 1 then
         -- If there's a validation function for this marker, use it
         if validate[marker] then
-          if validate[marker](marker_path) then
+          local result = validate[marker](marker_path)
+          if type(result) == "table" then
+            return true, result
+          elseif result then
             return true
           end
         else
