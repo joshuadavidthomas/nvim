@@ -3,7 +3,7 @@ local M = {}
 
 ---@class ProjectConfig
 ---@field markers string[] List of marker files to identify project type
----@field validate? table<string, fun(file_path: string): boolean> Optional validation functions for markers
+---@field validate? table<string, fun(file_path: string): boolean|boolean, table?> Optional validation functions for markers
 
 ---@type table<string, ProjectConfig>
 local project_types = {}
@@ -40,11 +40,9 @@ function M.is_project(project_type, path)
       if vim.fn.filereadable(marker_path) == 1 then
         -- If there's a validation function for this marker, use it
         if validate[marker] then
-          local result = validate[marker](marker_path)
-          if type(result) == "table" then
-            return true, result
-          elseif result then
-            return true
+          local is_valid, metadata = validate[marker](marker_path)
+          if is_valid then
+            return true, metadata
           end
         else
           -- No validation needed, marker's presence is enough

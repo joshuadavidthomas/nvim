@@ -49,16 +49,16 @@ function M.setup()
     "eleventy.config.cjs",
   }, {
     [".eleventy.js"] = function(file_path)
-      return M.detect_eleventy_template_engines(file_path)
+      return true, M.detect_eleventy_template_engines(file_path)
     end,
     ["eleventy.config.js"] = function(file_path)
-      return M.detect_eleventy_template_engines(file_path)
+      return true, M.detect_eleventy_template_engines(file_path)
     end,
     ["eleventy.config.mjs"] = function(file_path)
-      return M.detect_eleventy_template_engines(file_path)
+      return true, M.detect_eleventy_template_engines(file_path)
     end,
     ["eleventy.config.cjs"] = function(file_path)
-      return M.detect_eleventy_template_engines(file_path)
+      return true, M.detect_eleventy_template_engines(file_path)
     end,
   })
 end
