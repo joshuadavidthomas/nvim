@@ -30,6 +30,9 @@ end
 function M.setup()
   local projects = require("utils.projects")
 
+  -- Add compatibility shim for breaking change on nightly/0.11
+  local opts = vim.fn.has("nvim-0.10") == 1 and { force = true, all = false } or true
+
   projects.register("django", { "manage.py", "pyproject.toml" }, {
     ["pyproject.toml"] = function(file_path)
       local content = vim.fn.readfile(file_path)

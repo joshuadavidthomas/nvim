@@ -114,12 +114,25 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
     local is_11ty, metadata = require("utils.projects").is_project("11ty", file_dir)
 
     if is_11ty and metadata then
-      -- For markdown, we might want to use a combined filetype
+      -- Keep the filetype as markdown
+      vim.bo[args.buf].filetype = "markdown"
+      
+      -- Store the template engine in a buffer variable
       local engine = metadata.markdown or "njk"
-      local template_filetype = template_engine_to_filetype[engine] or "html"
-
-      -- Set a composite filetype if your editor supports it
-      vim.bo[args.buf].filetype = template_filetype
+      vim.b[args.buf].eleventy_template_engine = engine
+      
+      -- Set up treesitter injections after treesitter is loaded
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "markdown",
+        buffer = args.buf,
+        once = true,
+        callback = function()
+          -- Delay slightly to ensure treesitter is initialized
+          vim.defer_fn(function()
+            require("utils.projects").setup_11ty_injections(args.buf, engine)
+          end, 100)
+        end
+      })
       return
     end
 
