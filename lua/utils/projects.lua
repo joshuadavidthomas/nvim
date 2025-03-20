@@ -3,7 +3,7 @@ local M = {}
 
 ---@class ProjectConfig
 ---@field markers string[] List of marker files to identify project type
----@field validate? table<string, fun(file_path: string): boolean|boolean, table?> Optional validation functions for markers
+---@field validate? table<string, fun(file_path: string): boolean, table?> Optional validation functions for markers
 
 ---@type table<string, ProjectConfig>
 local project_types = {}
