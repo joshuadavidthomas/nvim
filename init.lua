@@ -29,6 +29,21 @@ M.setup = function()
     install = {
       colorscheme = { "tokyonight" },
     },
+    performance = {
+      rtp = {
+        -- disable some rtp plugins
+        disabled_plugins = {
+          "gzip",
+          "matchit",
+          -- "matchparen",
+          "netrwPlugin",
+          "rplugin",
+          "tarPlugin",
+          "tohtml",
+          "zipPlugin",
+        },
+      },
+    },
     spec = {
       { import = "plugins" },
       { import = "plugins.lang" },
