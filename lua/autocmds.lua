@@ -89,7 +89,7 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
   callback = function(args)
     local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
 
-    local is_11ty, metadata = require("lang.init").is_project("11ty", file_dir)
+    local is_11ty, metadata = require("lang").is_project("11ty", file_dir)
     if is_11ty and metadata then
       vim.bo[args.buf].filetype = "markdown"
 
