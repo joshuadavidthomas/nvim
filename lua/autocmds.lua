@@ -122,9 +122,12 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
       vim.b[args.buf].eleventy_template_engine = engine
       
       -- Set up treesitter injections after treesitter is loaded
+      -- Create a unique autocmd group for this buffer
+      local buffer_group = vim.api.nvim_create_augroup("eleventy_md_" .. args.buf, { clear = true })
+      
       vim.api.nvim_create_autocmd("FileType", {
+        group = buffer_group,
         pattern = "markdown",
-        buffer = args.buf,
         once = true,
         callback = function()
           -- Delay slightly to ensure treesitter is initialized
