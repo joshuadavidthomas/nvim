@@ -14,6 +14,13 @@ function M.setup()
       return false
     end,
   })
+
+  projects.register("11ty", {
+    ".eleventy.js",
+    "eleventy.config.js",
+    "eleventy.config.mjs",
+    "eleventy.config.cjs",
+  })
 end
 
 return M

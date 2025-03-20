@@ -71,3 +71,17 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
     vim.bo[args.buf].filetype = "html"
   end,
 })
+
+vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
+  group = augroup("11ty-filetype-detection"),
+  pattern = "*.html",
+  callback = function(args)
+    local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
+    if require("utils.projects").is_project("11ty", file_dir) then
+      vim.bo[args.buf].filetype = "nunjucks"
+      return
+    end
+
+    vim.bo[args.buf].filetype = "html"
+  end,
+})
