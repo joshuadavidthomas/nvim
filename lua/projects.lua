@@ -6,24 +6,24 @@ local M = {}
 function M.detect_eleventy_template_engines(config_path)
   local content = vim.fn.readfile(config_path)
   local engines = {
-    html = "njk",      -- Default to njk for HTML
-    markdown = "njk",  -- Default to njk for Markdown
+    html = "njk", -- Default to njk for HTML
+    markdown = "njk", -- Default to njk for Markdown
   }
-  
+
   for _, line in ipairs(content) do
     -- Look for htmlTemplateEngine setting
     local html_engine = line:match("htmlTemplateEngine%s*:%s*[\"']([^\"']+)[\"']")
     if html_engine then
       engines.html = html_engine
     end
-    
+
     -- Look for markdownTemplateEngine setting
     local md_engine = line:match("markdownTemplateEngine%s*:%s*[\"']([^\"']+)[\"']")
     if md_engine then
       engines.markdown = md_engine
     end
   end
-  
+
   return engines
 end
 
