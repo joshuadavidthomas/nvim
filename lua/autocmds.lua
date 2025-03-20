@@ -58,89 +58,60 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- when opening HTML file check if in Django project and set filetype automatically
 vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
-  group = augroup("django-filetype-detection"),
+  group = augroup("html-filetype-detection"),
   pattern = "*.html",
   callback = function(args)
+    local projects = require("projects")
+
     local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
-    if require("utils.projects").is_project("django", file_dir) then
+
+    local is_django = projects.is_project("django", file_dir)
+    local is_11ty, metadata = projects.is_project("11ty", file_dir)
+
+    if is_django then
       vim.bo[args.buf].filetype = "htmldjango"
       return
     end
 
-    vim.bo[args.buf].filetype = "html"
-  end,
-})
-
--- Create a mapping of template engines to filetypes
-local template_engine_to_filetype = {
-  njk = "nunjucks",
-  liquid = "liquid",
-  hbs = "handlebars",
-  handlebars = "handlebars",
-  mustache = "mustache",
-  ejs = "ejs",
-  haml = "haml",
-  pug = "pug",
-  -- Add more mappings as needed
-}
-
--- 11ty HTML file detection
-vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
-  group = augroup("11ty-html-detection"),
-  pattern = "*.html",
-  callback = function(args)
-    local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
-    local is_11ty, metadata = require("utils.projects").is_project("11ty", file_dir)
-
     if is_11ty and metadata then
       local engine = metadata.html or "njk"
-      local filetype = template_engine_to_filetype[engine] or "html"
+      local filetype = require("projects.11ty").template_engine_to_filetype[engine] or "html"
       vim.bo[args.buf].filetype = filetype
       return
     end
 
-    -- Not an 11ty project, continue with normal HTML filetype
     vim.bo[args.buf].filetype = "html"
   end,
 })
 
--- 11ty Markdown file detection
 vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
-  group = augroup("11ty-markdown-detection"),
+  group = augroup("markdown-detection"),
   pattern = "*.md",
   callback = function(args)
     local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
-    local is_11ty, metadata = require("utils.projects").is_project("11ty", file_dir)
 
+    local is_11ty, metadata = require("projects").is_project("11ty", file_dir)
     if is_11ty and metadata then
-      -- Keep the filetype as markdown
       vim.bo[args.buf].filetype = "markdown"
 
-      -- Store the template engine in a buffer variable
       local engine = metadata.markdown or "njk"
       vim.b[args.buf].eleventy_template_engine = engine
 
-      -- Set up treesitter injections after treesitter is loaded
-      -- Create a unique autocmd group for this buffer
-      local buffer_group = vim.api.nvim_create_augroup("eleventy_md_" .. args.buf, { clear = true })
-
       vim.api.nvim_create_autocmd("FileType", {
-        group = buffer_group,
+        group = vim.api.nvim_create_augroup("eleventy_md_" .. args.buf, { clear = true }),
         pattern = "markdown",
         once = true,
         callback = function()
           -- Delay slightly to ensure treesitter is initialized
           vim.defer_fn(function()
-            require("utils.projects").setup_11ty_injections(args.buf, engine)
+            require("projects.11ty").setup_11ty_injections(args.buf, engine)
           end, 100)
         end,
       })
       return
     end
 
-    -- Not an 11ty project, continue with normal Markdown filetype
     vim.bo[args.buf].filetype = "markdown"
   end,
 })

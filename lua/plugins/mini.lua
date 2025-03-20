@@ -133,7 +133,7 @@ return {
             end
           end,
           group = function(_, _, m)
-            local tw = require("utils.tailwind")
+            local tw = require("projects.tailwind")
             ---@type string
             local match = m.full_match
             ---@type string, number

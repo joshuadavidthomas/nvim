@@ -1,74 +1,6 @@
 ---@class Projects
 local M = {}
 
----Set up treesitter injections for 11ty template engines in markdown files
----@param bufnr number Buffer number
----@param engine string Template engine name
-function M.setup_11ty_injections(bufnr, engine)
-  -- Map of template engines to treesitter language names
-  local engine_to_lang = {
-    njk = "nunjucks",
-    liquid = "liquid",
-    hbs = "handlebars",
-    handlebars = "handlebars",
-    mustache = "mustache",
-    ejs = "ejs",
-    haml = "haml",
-    pug = "pug",
-  }
-
-  local lang = engine_to_lang[engine] or engine
-
-  -- Only proceed if we have a valid language mapping
-  if not lang then
-    return
-  end
-
-  -- Ensure the parser is available
-  local parser_ok, _ = pcall(vim.treesitter.language.add, lang)
-  if not parser_ok then
-    vim.notify("Treesitter parser for " .. lang .. " not available", vim.log.levels.WARN)
-    return
-  end
-
-  -- Create a custom injection query for markdown files with template language
-  local query = string.format(
-    [[
-    ;; Inject template language into fenced code blocks with matching language
-    ((fenced_code_block
-      (info_string) @_lang
-      (code_fence_content) @injection.content)
-     (#eq? @_lang "%s")
-     (#set! injection.language "%s"))
-
-    ;; Inject template language into template tags
-    ((inline) @injection.content
-     (#lua-match? @injection.content "{[%%{#]")
-     (#set! injection.language "%s"))
-
-    ;; Handle front matter
-    ((front_matter) @injection.content
-     (#set! injection.language "yaml")
-     (#offset! @injection.content 1 0 -1 0)
-     (#set! injection.include-children))
-  ]],
-    lang,
-    lang,
-    lang
-  )
-
-  -- Register the query with treesitter
-  vim.treesitter.query.set("markdown", "injections-" .. bufnr, query)
-
-  -- Store the query in a buffer variable so it persists
-  vim.b[bufnr].eleventy_injection_query = query
-
-  -- Force treesitter to reparse the buffer
-  vim.api.nvim_buf_call(bufnr, function()
-    vim.cmd("TSBufEnable highlight")
-  end)
-end
-
 ---@class ProjectConfig
 ---@field markers string[] List of marker files to identify project type
 ---@field validate? table<string, fun(file_path: string): boolean, table?> Optional validation functions for markers
@@ -138,6 +70,41 @@ function M.is_buffer_project(project_type, bufnr)
   bufnr = bufnr or 0
   local buf_path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":h")
   return M.is_project(project_type, buf_path)
+end
+
+function M.setup()
+  M.register("django", { "manage.py", "pyproject.toml" }, {
+    ["pyproject.toml"] = function(file_path)
+      local content = vim.fn.readfile(file_path)
+      for _, line in ipairs(content) do
+        if line:match("django") then
+          return true
+        end
+      end
+      return false
+    end,
+  })
+
+  local eleventy = require("projects.11ty")
+  M.register("11ty", {
+    ".eleventy.js",
+    "eleventy.config.js",
+    "eleventy.config.mjs",
+    "eleventy.config.cjs",
+  }, {
+    [".eleventy.js"] = function(file_path)
+      return true, eleventy.detect_eleventy_template_engines(file_path)
+    end,
+    ["eleventy.config.js"] = function(file_path)
+      return true, eleventy.detect_eleventy_template_engines(file_path)
+    end,
+    ["eleventy.config.mjs"] = function(file_path)
+      return true, eleventy.detect_eleventy_template_engines(file_path)
+    end,
+    ["eleventy.config.cjs"] = function(file_path)
+      return true, eleventy.detect_eleventy_template_engines(file_path)
+    end,
+  })
 end
 
 return M
