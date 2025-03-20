@@ -92,7 +92,7 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
   callback = function(args)
     local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
     local is_11ty, metadata = require("utils.projects").is_project("11ty", file_dir)
-    
+
     if is_11ty and metadata then
       local engine = metadata.html or "njk"
       local filetype = template_engine_to_filetype[engine] or "html"
@@ -112,14 +112,14 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
   callback = function(args)
     local file_dir = vim.fn.fnamemodify(args.file, ":p:h")
     local is_11ty, metadata = require("utils.projects").is_project("11ty", file_dir)
-    
+
     if is_11ty and metadata then
       -- For markdown, we might want to use a combined filetype
       local engine = metadata.markdown or "njk"
       local template_filetype = template_engine_to_filetype[engine] or "html"
-      
+
       -- Set a composite filetype if your editor supports it
-      vim.bo[args.buf].filetype = "markdown." .. template_filetype
+      vim.bo[args.buf].filetype = template_filetype
       return
     end
 
