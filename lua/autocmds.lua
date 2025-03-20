@@ -80,8 +80,6 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
       vim.bo[args.buf].filetype = filetype
       return
     end
-
-    vim.bo[args.buf].filetype = "html"
   end,
 })
 
@@ -111,7 +109,5 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
       })
       return
     end
-
-    vim.bo[args.buf].filetype = "markdown"
   end,
 })
