@@ -9,7 +9,6 @@ function M.setup()
   require("autocmds")
   require("commands")
   require("lsp").setup()
-  vim.treesitter.language.register("twig", "nunjucks")
 end
 
 return M

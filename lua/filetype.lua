@@ -7,3 +7,5 @@ vim.filetype.add({
     ["%.env[%.%w]*"] = "config",
   },
 })
+
+vim.treesitter.language.register("twig", "nunjucks")
