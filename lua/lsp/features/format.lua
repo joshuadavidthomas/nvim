@@ -1,7 +1,5 @@
 local M = {}
 
-local lsp = require("lsp")
-
 ---@class FormatOnSaveOptions
 ---@field enabled boolean
 ---@field timeout_ms number milliseconds before formatting times out
@@ -10,8 +8,8 @@ local lsp = require("lsp")
 function M.setup_on_save(opts)
   opts = opts or { enabled = false, timeout_ms = 3000 }
 
-  lsp.on_attach(function(client, buffer)
-    if not client.supports_method("textDocument/formatting") then
+  require("lsp").on_attach(function(_, buffer)
+    if not require("lsp.capabilities").supports_method("textDocument/formatting") then
       return
     end
 

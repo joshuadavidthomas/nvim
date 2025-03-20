@@ -1,3 +1,5 @@
+local v = require("utils.vim")
+
 local M = {}
 
 ---@class CodeLensOptions
@@ -9,10 +11,8 @@ function M.setup(opts)
     return
   end
 
-  local capabilities = require("lsp.capabilities")
-
-  capabilities.on_supports_method("textDocument/codeLens", function(_, buffer)
-    if not capabilities.is_valid_buffer(buffer) then
+  require("lsp.capabilities").on_supports_method("textDocument/codeLens", function(_, buffer)
+    if not v.is_valid_buffer(buffer) then
       return
     end
 

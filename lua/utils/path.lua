@@ -1,15 +1,13 @@
 local M = {}
 
-local uv = vim.uv
-
 --- Check if the operating system is Windows.
-local is_windows = uv.os_uname().version:match 'Windows'
+local is_windows = vim.uv.os_uname().version:match("Windows")
 
 --- Escape wildcard characters in a filesystem path.
 --- @param path string The path to sanitize.
 --- @return string The sanitized path with wildcards escaped.
 function M.escape_wildcards(path)
-  local escaped_path = path:gsub('([%[%]%?%*])', '\\%1')
+  local escaped_path = path:gsub("([%[%]%?%*])", "\\%1")
   return escaped_path
 end
 
@@ -19,7 +17,7 @@ end
 function M.sanitize(path)
   if is_windows then
     path = path:sub(1, 1):upper() .. path:sub(2)
-    path = path:gsub('\\', '/')
+    path = path:gsub("\\", "/")
   end
   return path
 end
@@ -28,7 +26,7 @@ end
 --- @param filename string The filename or directory path to check.
 --- @return string|false The type of the file system object ('file', 'directory', etc.) or false if not found.
 function M.exists(filename)
-  local stat = uv.fs_stat(filename)
+  local stat = vim.uv.fs_stat(filename)
   return stat and stat.type or false
 end
 
@@ -36,14 +34,14 @@ end
 --- @param filename string The path to check.
 --- @return boolean True if the path is a directory, false otherwise.
 function M.is_dir(filename)
-  return M.exists(filename) == 'directory'
+  return M.exists(filename) == "directory"
 end
 
 --- Determine if a specified path is a file.
 --- @param filename string The path to check.
 --- @return boolean True if the path is a file, false otherwise.
 function M.is_file(filename)
-  return M.exists(filename) == 'file'
+  return M.exists(filename) == "file"
 end
 
 --- Check if a path is the filesystem root.
@@ -51,9 +49,9 @@ end
 --- @return boolean True if the path is the root of the filesystem, false otherwise.
 function M.is_fs_root(path)
   if is_windows then
-    return path:match '^%a:$'
+    return path:match("^%a:$")
   else
-    return path == '/'
+    return path == "/"
   end
 end
 
@@ -62,15 +60,15 @@ end
 --- @return boolean True if the path is absolute, false otherwise.
 function M.is_absolute(filename)
   if is_windows then
-    return filename:match '^%a:' or filename:match '^\\\\'
+    return filename:match("^%a:") or filename:match("^\\\\")
   else
-    return filename:match '^/'
+    return filename:match("^/")
   end
 end
 
 function M.parts(path)
   local parts = {}
-  for part in M.sanitize(path):gmatch '[^/\\]+' do
+  for part in M.sanitize(path):gmatch("[^/\\]+") do
     table.insert(parts, part)
   end
   return parts
@@ -98,13 +96,13 @@ function M.relative(from, to)
   -- Build the relative path
   local relativeParts = {}
   for _ = 1, #fromParts - commonLength do
-    table.insert(relativeParts, '..')
+    table.insert(relativeParts, "..")
   end
   for i = commonLength + 1, #toParts do
     table.insert(relativeParts, toParts[i])
   end
 
-  return table.concat(relativeParts, '/')
+  return table.concat(relativeParts, "/")
 end
 
 --- Get the directory part of a path, removing the last segment.
@@ -115,14 +113,14 @@ function M.dirname(path)
   if not path or #path == 0 then
     return path
   end
-  local strip_dir_pat = '/([^/]+)$'
-  local strip_sep_pat = '/$'
-  local result = path:gsub(strip_sep_pat, ''):gsub(strip_dir_pat, '')
+  local strip_dir_pat = "/([^/]+)$"
+  local strip_sep_pat = "/$"
+  local result = path:gsub(strip_sep_pat, ""):gsub(strip_dir_pat, "")
   if #result == 0 then
     if is_windows then
       return path:sub(1, 2):upper()
     else
-      return '/'
+      return "/"
     end
   end
   return result
@@ -132,22 +130,22 @@ end
 --- @vararg string The parts of the path to join.
 --- @return string The joined path.
 function M.join(...)
-  local parts = vim.tbl_flatten { ... }
+  local parts = vim.iter({ ... }):flatten():totable()
   -- Strip trailing slash, if exists
   for i, part in ipairs(parts) do
-    parts[i] = part:gsub('/+$', '')
+    parts[i] = part:gsub("/+$", "")
   end
-  return table.concat(parts, '/')
+  return table.concat(parts, "/")
 end
 
 --- Path separator based on the operating system.
-M.path_separator = is_windows and ';' or ':'
+M.path_separator = is_windows and ";" or ":"
 
 --- Join multiple path segments from a table into a single path string.
 --- @param paths table: A table (array) of strings, each representing a path segment.
 --- @return string: The resulting path after concatenating all provided segments from the table with the OS-specific path separator.
 function M.join_paths(paths)
-  return table.concat(vim.tbl_flatten(paths), M.path_separator)
+  return table.concat(vim.iter(paths):flatten():totable(), M.path_separator)
 end
 
 --- Search ancestor directories starting from a specified path and apply a given function to each until the function returns true.
@@ -155,7 +153,7 @@ end
 --- @param func function The function to apply to each ancestor directory. Should return true to stop the search.
 --- @return string|nil The path of the first ancestor directory for which the function returns true, or nil if none do.
 function M.search_ancestors(startpath, func)
-  vim.validate { func = { func, 'f' } }
+  vim.validate({ func = { func, "f" } })
   if func(startpath) then
     return startpath
   end
@@ -183,7 +181,7 @@ function M.iterate_parents(path)
     else
       return
     end
-    if v and uv.fs_realpath(v) then
+    if v and vim.uv.fs_realpath(v) then
       return v, path
     else
       return
@@ -215,31 +213,31 @@ end
 --- @return string The full filesystem path of the directory containing the buffer
 function M.buffer_to_path(buffer)
   -- Expand the buffer to a full path and extract the directory part
-  local full_path = vim.fn.expand('#' .. buffer .. ':p')
+  local full_path = vim.fn.expand("#" .. buffer .. ":p")
   return M.dirname(full_path)
 end
 
 function M.platformdirs(app)
-  app = app or ''
+  app = app or ""
   local home = vim.env.HOME
-  local user_data_dir = vim.env.XDG_DATA_HOME or M.join(home, '.local', 'share')
-  local user_config_dir = vim.env.XDG_CONFIG_HOME or M.join(home, '.config')
-  local user_cache_dir = vim.env.XDG_CACHE_HOME or M.join(home, '.cache')
-  local user_state_dir = vim.env.XDG_STATE_HOME or M.join(home, '.local', 'state')
-  local site_data_dir = vim.env.XDG_DATA_DIR or '/usr/local/share'
+  local user_data_dir = vim.env.XDG_DATA_HOME or M.join(home, ".local", "share")
+  local user_config_dir = vim.env.XDG_CONFIG_HOME or M.join(home, ".config")
+  local user_cache_dir = vim.env.XDG_CACHE_HOME or M.join(home, ".cache")
+  local user_state_dir = vim.env.XDG_STATE_HOME or M.join(home, ".local", "state")
+  local site_data_dir = vim.env.XDG_DATA_DIR or "/usr/local/share"
   local site_config_dir = (function()
     local dirs = vim.env.XDG_CONFIG_DIRS
     if not dirs then
-      return '/etc/xdg'
+      return "/etc/xdg"
     end
-    local config_dirs = type(dirs) == 'string' and vim.split(dirs, ':') or { '/etc/xdg' }
+    local config_dirs = type(dirs) == "string" and vim.split(dirs, ":") or { "/etc/xdg" }
     local result = {}
     for _, value in ipairs(config_dirs) do
       table.insert(result, M.join(value, app))
     end
     return result[1] -- Return first path
   end)()
-  local site_cache_dir = '/var/cache'
+  local site_cache_dir = "/var/cache"
 
   return {
     home = home,
@@ -258,17 +256,17 @@ end
 --- @param current_dir string?: The name of the current directory.
 --- @return boolean True if the file should be hidden, false otherwise.
 function M.is_hidden_file(name, current_dir)
-  if vim.startswith(name, '.') then
+  if vim.startswith(name, ".") then
     return true
   end
 
-  local cwd = current_dir or vim.fn.fnamemodify(name, ':p:h')
-  local gitignore_patterns = require('utils.git').get_gitignore_patterns(cwd)
+  local cwd = current_dir or vim.fn.fnamemodify(name, ":p:h")
+  local gitignore_patterns = require("utils.git").get_gitignore_patterns(cwd)
   if gitignore_patterns then
     for _, pattern in ipairs(gitignore_patterns) do
-      if pattern ~= '' then
+      if pattern ~= "" then
         local prepared_pattern = pattern
-        if pattern:sub(-1) == '/' then
+        if pattern:sub(-1) == "/" then
           prepared_pattern = pattern:sub(1, -2)
         end
         local regex_pattern = vim.fn.glob2regpat(prepared_pattern)

@@ -153,7 +153,8 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "<leader>dn",       function() Snacks.notifier.show_history() end,                          desc = "Notification History" },
+      { "<leader>m", function() Snacks.picker.notifications() end, desc = "Message history" },
+      { "<leader>um", function() Snacks.notifier.hide() end, desc = "Dismiss all messages" },
     },
   },
   {
@@ -200,11 +201,11 @@ return {
     config = function(_, opts)
       local Snacks = require("snacks")
       Snacks.setup(opts)
-      
-      Snacks.toggle({ 
+
+      Snacks.toggle({
         name = "Words",
         get = function() return Snacks.words.is_enabled() end,
-        set = function(enabled) Snacks.words.toggle(enabled) end 
+        set = function(enabled) Snacks.words.toggle(enabled) end
       }):map("<leader>uw")
     end,
   },

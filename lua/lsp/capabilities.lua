@@ -1,3 +1,5 @@
+local v = require("utils.vim")
+
 local M = {}
 
 ---@type table<string, table<vim.lsp.Client, table<number, boolean>>>
@@ -22,7 +24,7 @@ end
 ---@param client vim.lsp.Client
 ---@param buffer number
 function M._check_methods(client, buffer)
-  if not M.is_valid_buffer(buffer) then
+  if not v.is_valid_buffer(buffer) then
     return
   end
 
@@ -56,35 +58,51 @@ function M.on_dynamic_capability(fn, opts)
   })
 end
 
----@param capabilities? table
+---@param user_capabilities? table User-provided capabilities
+---@param workspace_capabilities? table Default workspace file operations if not included in user_capabilities
 ---@return table
-function M.get_capabilities(capabilities)
-  capabilities = capabilities or {}
-
+function M.get_capabilities(user_capabilities, workspace_capabilities)
+  -- Start with base protocol capabilities
   local default_capabilities = vim.lsp.protocol.make_client_capabilities()
 
-  local has_blink, blink = pcall(require, "blink.cmp")
-  if has_blink then
-    default_capabilities = vim.tbl_deep_extend("force", default_capabilities, blink.get_lsp_capabilities())
+  -- Add workspace file operations if provided
+  if workspace_capabilities then
+    default_capabilities = vim.tbl_deep_extend("force", default_capabilities, workspace_capabilities)
   end
 
-  return vim.tbl_deep_extend("force", default_capabilities, capabilities)
+  -- Apply user-provided capabilities last so they take precedence
+  if user_capabilities then
+    default_capabilities = vim.tbl_deep_extend("force", default_capabilities, user_capabilities)
+  end
+
+  return default_capabilities
 end
 
----@param buffer number The buffer number to check
----@param exclude_filetypes? string[] Optional list of filetypes to exclude
----@return boolean valid Whether the buffer is valid and should be processed
-function M.is_valid_buffer(buffer, exclude_filetypes)
-  -- Skip invalid buffers, non-listed buffers, and special buffers
-  if not vim.api.nvim_buf_is_valid(buffer) or not vim.bo[buffer].buflisted or vim.bo[buffer].buftype == "nofile" then
-    return false
+---Trigger dynamic capability update for a specific client or all clients
+---@param client_id? integer Optional client ID. If nil, updates all clients
+function M.trigger_dynamic_capabilities(client_id)
+  if client_id then
+    -- Update specific client
+    local client = vim.lsp.get_client_by_id(client_id)
+    if client then
+      for bufnr, _ in pairs(client.attached_buffers or {}) do
+        vim.api.nvim_exec_autocmds("User", {
+          pattern = "LspDynamicCapability",
+          data = { client_id = client_id, buffer = bufnr },
+        })
+      end
+    end
+  else
+    -- Update all clients
+    for _, client in ipairs(vim.lsp.get_clients()) do
+      for bufnr, _ in pairs(client.attached_buffers or {}) do
+        vim.api.nvim_exec_autocmds("User", {
+          pattern = "LspDynamicCapability",
+          data = { client_id = client.id, buffer = bufnr },
+        })
+      end
+    end
   end
-
-  if exclude_filetypes and vim.tbl_contains(exclude_filetypes, vim.bo[buffer].filetype) then
-    return false
-  end
-
-  return true
 end
 
 return M

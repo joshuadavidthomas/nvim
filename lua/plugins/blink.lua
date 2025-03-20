@@ -66,7 +66,7 @@ return {
       ["<C-y>"] = { "select_and_accept" },
     },
     sources = {
-      default = { "git", "lsp", "path", "snippets", "buffer" },
+      default = { "git", "lsp", "path", "snippets", "buffer", "markdown" },
       providers = {
         git = {
           module = "blink-cmp-git",
@@ -76,10 +76,31 @@ return {
           end,
           opts = {},
         },
+        markdown = {
+          name = "RenderMarkdown",
+          module = "render-markdown.integ.blink",
+          fallbacks = { "lsp" },
+        },
       },
     },
     cmdline = {
       enabled = false,
     },
   },
+  config = function(_, opts)
+    require("blink.cmp").setup(opts)
+
+    local lsp_capabilities = require("lsp.capabilities")
+
+    lsp_capabilities.on_dynamic_capability(function(client, _)
+      local blink_capabilities = require("blink.cmp").get_lsp_capabilities()
+      if client.server_capabilities then
+        client.server_capabilities = vim.tbl_deep_extend("force", client.server_capabilities, blink_capabilities)
+        return true
+      end
+    end)
+
+    -- Use the centralized method to trigger capability updates for all clients
+    lsp_capabilities.trigger_dynamic_capabilities()
+  end,
 }

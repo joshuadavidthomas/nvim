@@ -1,3 +1,5 @@
+local v = require("utils.vim")
+
 local M = {}
 
 ---@class InlayHintsOptions
@@ -10,10 +12,8 @@ function M.setup(opts)
     return
   end
 
-  local capabilities = require("lsp.capabilities")
-
-  capabilities.on_supports_method("textDocument/inlayHint", function(_, buffer)
-    if not capabilities.is_valid_buffer(buffer, opts.exclude) then
+  require("lsp.capabilities").on_supports_method("textDocument/inlayHint", function(_, buffer)
+    if not v.is_valid_buffer(buffer, opts.exclude) then
       return
     end
 

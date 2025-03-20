@@ -41,6 +41,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "lspinfo",
     "notify",
     "qf",
+    "query",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
@@ -116,15 +117,15 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
     if is_11ty and metadata then
       -- Keep the filetype as markdown
       vim.bo[args.buf].filetype = "markdown"
-      
+
       -- Store the template engine in a buffer variable
       local engine = metadata.markdown or "njk"
       vim.b[args.buf].eleventy_template_engine = engine
-      
+
       -- Set up treesitter injections after treesitter is loaded
       -- Create a unique autocmd group for this buffer
       local buffer_group = vim.api.nvim_create_augroup("eleventy_md_" .. args.buf, { clear = true })
-      
+
       vim.api.nvim_create_autocmd("FileType", {
         group = buffer_group,
         pattern = "markdown",
@@ -134,7 +135,7 @@ vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {
           vim.defer_fn(function()
             require("utils.projects").setup_11ty_injections(args.buf, engine)
           end, 100)
-        end
+        end,
       })
       return
     end
