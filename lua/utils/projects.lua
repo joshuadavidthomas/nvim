@@ -11,7 +11,7 @@ local project_types = {}
 ---Register a project type
 ---@param name string The name of the project type
 ---@param markers string[] List of marker files to identify this project type
----@param validate? table<string, fun(file_path: string): boolean> Optional validation functions for markers
+---@param validate? table<string, fun(file_path: string): boolean, table?> Optional validation functions for markers
 function M.register(name, markers, validate)
   project_types[name] = {
     markers = markers,
