@@ -1,6 +1,5 @@
 return {
   "nvim-lualine/lualine.nvim",
-  -- event = "VeryLazy",
   event = "LazyFile",
   lazy = require("utils.vim").opened_to_file,
   init = function()
@@ -23,15 +22,19 @@ return {
     vim.o.laststatus = vim.g.lualine_laststatus
 
     local opts = {
+      extensions = { "lazy", "mason", "oil", "quickfix" },
       options = {
         theme = "auto",
         globalstatus = vim.o.laststatus == 3,
-        disabled_filetypes = { statusline = { "lazy", "snacks_dashboard", "snacks_picker_input" } },
+        disabled_filetypes = {
+          statusline = { "lazy", "oil", "snacks_dashboard", "snacks_picker_input" },
+          tabline = { "oil" },
+          winbar = { "oil" },
+        },
       },
       sections = {
         lualine_a = { "mode" },
         lualine_b = { "branch" },
-
         lualine_c = {
           -- LazyVim.lualine.root_dir(),
           {
@@ -83,7 +86,22 @@ return {
           end,
         },
       },
-      extensions = { "lazy" },
+      -- tabline = {
+      --   lualine_a = { "buffers" },
+      --   lualine_b = { "branch" },
+      --   lualine_c = { "filename" },
+      --   lualine_x = {},
+      --   lualine_y = {},
+      --   lualine_z = { "tabs" },
+      -- },
+      winbar = {
+        lualine_a = {},
+        lualine_b = {},
+        lualine_c = { "filename" },
+        lualine_x = { "require('utils.spotify').current_track" },
+        lualine_y = {},
+        lualine_z = {},
+      },
     }
 
     return opts

@@ -1,10 +1,17 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
 [project]
-name = "nvim"
-version = "0.0.0"
+authors = [{name = "Josh Thomas", email = "josh@joshthomas.dev"}]
+name = "spotify-nvim"
 requires-python = ">=3.13"
+version = "0.1.0"
 dependencies = [
+  "dbus-fast>=2.44.0",
+  "pydantic>=2.11.2",
+  "pydantic-settings>=2.8.1",
   "pynvim>=0.5.0",
-  "spotify-nvim"
 ]
 
 [tool.basedpyright]
@@ -13,6 +20,12 @@ include = ["*.py"]
 reportAny = false
 reportExplicitAny = false
 reportUnusedCallResult = false
+
+[tool.hatch.build]
+exclude = [".*"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["rplugin/python/spotify"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
@@ -71,12 +84,3 @@ required-imports = ["from __future__ import annotations"]
 [tool.ruff.lint.pyupgrade]
 # Preserve types, even if a file imports `from __future__ import annotations`.
 keep-runtime-typing = true
-
-[tool.uv]
-required-version = "<0.7"
-
-[tool.uv.sources]
-spotify-nvim = { workspace = true }
-
-[tool.uv.workspace]
-members = ["lib/*"]

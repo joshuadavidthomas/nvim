@@ -26,6 +26,13 @@ M.setup = function()
     checker = {
       enabled = true,
     },
+    dev = {
+      path = vim.fn.stdpath("config") .. "/lib",
+      patterns = {
+        "joshuadavidthomas",
+      },
+      fallback = false,
+    },
     install = {
       colorscheme = { "tokyonight" },
     },
@@ -37,7 +44,7 @@ M.setup = function()
           "matchit",
           -- "matchparen",
           "netrwPlugin",
-          "rplugin",
+          -- "rplugin",
           "tarPlugin",
           "tohtml",
           "zipPlugin",
@@ -47,6 +54,7 @@ M.setup = function()
     spec = {
       { import = "plugins" },
       { import = "plugins.lang" },
+      "joshuadavidthomas/spotify.nvim",
     },
   })
   require("config").setup()

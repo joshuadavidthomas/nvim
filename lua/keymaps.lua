@@ -47,7 +47,9 @@ vim.keymap.set("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
 vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
 -- format
-vim.keymap.set("n", "<leader>cf", function() require("utils.format").format() end, { desc = "Format Document" })
+vim.keymap.set("n", "<leader>cf", function()
+  require("utils.format").format()
+end, { desc = "Format Document" })
 
 -- commenting
 vim.keymap.set("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
@@ -103,3 +105,12 @@ if require("utils.term").is_wezterm then
     vim.keymap.set("n", "<C-" .. key .. ">", navigate(key))
   end
 end
+
+-- notes
+vim.keymap.set("n", "<leader>nn", function()
+  require("utils.notes").toggle_notes_sidebar()
+end, { desc = "Toggle Notes" })
+
+vim.keymap.set("n", "<leader>zs", function()
+  require("utils.spotify").run_spotify_command("status")
+end, { desc = "Spotifyd: Show Status" })

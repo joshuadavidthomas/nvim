@@ -1,17 +1,19 @@
-Plugins
+# TODO
+
+## Plugins
 
 - [ ] dap
-- [ ] diffsigns/mini.diff
-- [ ] grapple/harpoon
-- [ ] grug-far
-- [ ] markdown-preview
+- [x] diffsigns/mini.diff
+- [x] grapple/harpoon
+- [x] grug-far
+- [x] markdown-preview
 - [x] mini.icons
 - [ ] neotest
 - [ ] nvim-treesitter-objects
-- [ ] obsidian
-- [ ] octo
-- [ ] render-markdown/markview
+- [x] obsidian
+- [x] octo
+- [x] render-markdown/markview
 - [x] todo-comments
-- [ ] ts-comments
+- [x] ts-comments
 - [ ] vscode
-- [ ] yanky
+- [x] yanky

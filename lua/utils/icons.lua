@@ -1,9 +1,5 @@
 local M = {}
 
-M.ft = {
-  octo = "",
-}
-
 M.dap = {
   Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
   Breakpoint = " ",
@@ -17,6 +13,10 @@ M.diagnostics = {
   Warn = " ",
   Hint = " ",
   Info = " ",
+}
+
+M.ft = {
+  octo = "",
 }
 
 M.git = {
@@ -69,8 +69,12 @@ M.kinds = {
 }
 
 M.misc = {
+  error = "",
   dots = "󰇘",
+  music = "",
   note = "󱞁",
+  play = "",
+  pause = "",
 }
 
 return M
