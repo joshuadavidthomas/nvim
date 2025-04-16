@@ -26,47 +26,6 @@ return {
       },
     },
   },
-  {
-    "echasnovski/mini.diff",
-    event = "LazyFile",
-    dependencies = {
-      "folke/snacks.nvim",
-    },
-    opts = {
-      view = {
-        style = "sign",
-        signs = {
-          add = "▎",
-          change = "▎",
-          delete = "",
-        },
-      },
-    },
-    config = function(_, opts)
-      require("mini.diff").setup(opts)
-
-      require("snacks")
-        .toggle({
-          name = "Mini Diff Signs",
-          get = function()
-            return vim.g.minidiff_disable ~= true
-          end,
-          set = function(state)
-            vim.g.minidiff_disable = not state
-            if state then
-              require("mini.diff").enable(0)
-            else
-              require("mini.diff").disable(0)
-            end
-            -- HACK: redraw to update the signs
-            vim.defer_fn(function()
-              vim.cmd([[redraw!]])
-            end, 200)
-          end,
-        })
-        :map("<leader>uG")
-    end,
-  },
   -- Highlight patterns in text.
   {
     "echasnovski/mini.hipatterns",

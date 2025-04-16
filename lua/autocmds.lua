@@ -37,6 +37,7 @@ vim.api.nvim_create_autocmd("FileType", {
   group = augroup("close-with-q"),
   pattern = {
     "checkhealth",
+    "gitsigns-blame",
     "grug-far",
     "help",
     "lspinfo",
