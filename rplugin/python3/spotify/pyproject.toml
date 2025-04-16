@@ -25,7 +25,7 @@ reportUnusedCallResult = false
 exclude = [".*"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["rplugin/python/spotify"]
+packages = ["."]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
@@ -75,8 +75,8 @@ select = [
   "I",  # isort
   "UP"  # pyupgrade
 ]
-
 unfixable = []
+
 [tool.ruff.lint.isort]
 force-single-line = true
 required-imports = ["from __future__ import annotations"]

@@ -110,7 +110,3 @@ end
 vim.keymap.set("n", "<leader>nn", function()
   require("utils.notes").toggle_notes_sidebar()
 end, { desc = "Toggle Notes" })
-
-vim.keymap.set("n", "<leader>zs", function()
-  require("utils.spotify").run_spotify_command("status")
-end, { desc = "Spotifyd: Show Status" })

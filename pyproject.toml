@@ -79,4 +79,4 @@ required-version = "<0.7"
 spotify-nvim = { workspace = true }
 
 [tool.uv.workspace]
-members = ["lib/*"]
+members = ["rplugin/python3/*"]

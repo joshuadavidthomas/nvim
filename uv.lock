@@ -88,7 +88,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "pynvim", specifier = ">=0.5.0" },
-    { name = "spotify-nvim", editable = "lib/spotify.nvim" },
+    { name = "spotify-nvim", editable = "rplugin/python3/spotify" },
 ]
 
 [[package]]
@@ -172,7 +172,7 @@ wheels = [
 [[package]]
 name = "spotify-nvim"
 version = "0.1.0"
-source = { editable = "lib/spotify.nvim" }
+source = { editable = "rplugin/python3/spotify" }
 dependencies = [
     { name = "dbus-fast" },
     { name = "pydantic" },

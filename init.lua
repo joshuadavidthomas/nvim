@@ -34,7 +34,9 @@ M.setup = function()
       fallback = false,
     },
     install = {
-      colorscheme = { "tokyonight" },
+      colorscheme = {
+        "tokyonight",
+      },
     },
     performance = {
       rtp = {
@@ -54,7 +56,6 @@ M.setup = function()
     spec = {
       { import = "plugins" },
       { import = "plugins.lang" },
-      "joshuadavidthomas/spotify.nvim",
     },
   })
   require("config").setup()
