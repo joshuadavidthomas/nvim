@@ -1,5 +1,6 @@
 return {
   "MeanderingProgrammer/render-markdown.nvim",
+  ft = { "markdown", "norg", "rmd", "org", "codecompanion" },
   ---@module 'render-markdown'
   ---@type render.md.UserConfig
   opts = {
@@ -18,8 +19,12 @@ return {
       sign = false,
       icons = {},
     },
+    html = {
+      comment = {
+        conceal = false,
+      },
+    },
   },
-  ft = { "markdown", "norg", "rmd", "org", "codecompanion" },
   config = function(_, opts)
     require("render-markdown").setup(opts)
     Snacks.toggle({
