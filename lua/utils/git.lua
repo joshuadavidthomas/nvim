@@ -8,7 +8,6 @@ local M = {}
 --- Find the closest git repository ancestor directory.
 --- This function was copied and adapted from https://github.com/neovim/nvim-lspconfig
 --- nvim-lspconfig is Copyright Neovim contributors and is licensed under the Apache 2.0 license.
---- A copy of the Apache 2.0 license can be found in `.config/nvim/.licenses/`.
 --- @param startpath string: The starting file or directory path to search for a git ancestor.
 --- @return string|nil: The path to the closest git repository ancestor, or nil if not found.
 function M.find_git_ancestor(startpath)
