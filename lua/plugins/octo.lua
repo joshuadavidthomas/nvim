@@ -18,6 +18,11 @@ return {
       end,
     })
 
+    local wk = require("which-key")
+    wk.add({
+      { "<leader>o", group = "GitHub" },
+    })
+
     return {
       default_merge_method = "squash",
       default_to_projects_v2 = true,
@@ -27,12 +32,12 @@ return {
     }
   end,
   keys = {
-    { "<leader>gi", "<cmd>Octo issue list<CR>", desc = "List issues" },
-    { "<leader>gI", "<cmd>Octo issue search<CR>", desc = "Search issues" },
-    { "<leader>gp", "<cmd>Octo pr list<CR>", desc = "List PRs" },
-    { "<leader>gP", "<cmd>Octo pr search<CR>", desc = "Search PRs" },
-    { "<leader>gr", "<cmd>Octo repo list<CR>", desc = "List repos" },
-    { "<leader>gS", "<cmd>Octo search<CR>", desc = "Search GitHub" },
+    { "<leader>goi", "<cmd>Octo issue list<CR>", desc = "List issues" },
+    { "<leader>goI", "<cmd>Octo issue search<CR>", desc = "Search issues" },
+    { "<leader>gop", "<cmd>Octo pr list<CR>", desc = "List PRs" },
+    { "<leader>goP", "<cmd>Octo pr search<CR>", desc = "Search PRs" },
+    { "<leader>gor", "<cmd>Octo repo list<CR>", desc = "List repos" },
+    { "<leader>goS", "<cmd>Octo search<CR>", desc = "Search GitHub" },
     { "<localleader>a", "", desc = "+assignee (Octo)", ft = "octo" },
     { "<localleader>c", "", desc = "+comment/code (Octo)", ft = "octo" },
     { "<localleader>l", "", desc = "+label (Octo)", ft = "octo" },
