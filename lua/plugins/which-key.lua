@@ -8,6 +8,7 @@ return {
       {
         mode = { "n", "v" },
         { "<leader>c", group = "code" },
+        { "<leader>d", group = "debug" },
         { "<leader>g", group = "git" },
         {
           "<leader>n",
