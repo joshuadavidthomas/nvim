@@ -27,9 +27,7 @@ return {
         theme = "auto",
         globalstatus = vim.o.laststatus == 3,
         disabled_filetypes = {
-          statusline = { "lazy", "oil", "snacks_dashboard", "snacks_picker_input" },
-          tabline = { "oil" },
-          winbar = { "oil" },
+          statusline = { "help", "lazy", "snacks_dashboard", "snacks_picker_input" },
         },
       },
       sections = {
@@ -65,12 +63,12 @@ return {
               removed = icons.git.removed,
             },
             source = function()
-              local gitsigns = vim.b.gitsigns_status_dict
-              if gitsigns then
+              local diff = vim.b.minidiff_summary
+              if diff then
                 return {
-                  added = gitsigns.added,
-                  modified = gitsigns.changed,
-                  removed = gitsigns.removed,
+                  added = diff.add,
+                  modified = diff.change,
+                  removed = diff.delete,
                 }
               end
             end,
@@ -82,25 +80,9 @@ return {
         },
         lualine_z = {
           function()
-            return " " .. os.date("%R")
+            return " " .. os.date("%I:%M%p")
           end,
         },
-      },
-      -- tabline = {
-      --   lualine_a = { "buffers" },
-      --   lualine_b = { "branch" },
-      --   lualine_c = { "filename" },
-      --   lualine_x = {},
-      --   lualine_y = {},
-      --   lualine_z = { "tabs" },
-      -- },
-      winbar = {
-        lualine_a = {},
-        lualine_b = {},
-        lualine_c = { "filename" },
-        lualine_x = { "require('utils.spotify').current_track" },
-        lualine_y = {},
-        lualine_z = {},
       },
     }
 
