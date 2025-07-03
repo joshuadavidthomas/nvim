@@ -13,11 +13,17 @@ return {
       default_format_opts = {
         lsp_format = "fallback",
       },
-      format_on_save = {
-        async = false,
-        quiet = false,
-        timeout_ms = 3000,
-      },
+      format_on_save = function(bufnr)
+        local bufpath = vim.api.nvim_buf_get_name(bufnr)
+        if require("utils.format").projects.is_disabled(bufpath) then
+          return false
+        end
+        return {
+          async = false,
+          quiet = false,
+          timeout_ms = 3000,
+        }
+      end,
       formatters_by_ft = {
         lua = { "stylua" },
         sh = { "shfmt" },

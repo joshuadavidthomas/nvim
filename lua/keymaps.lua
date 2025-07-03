@@ -50,6 +50,15 @@ vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
 vim.keymap.set("n", "<leader>cf", function()
   require("utils.format").format()
 end, { desc = "Format Document" })
+Snacks.toggle({
+  name = "Format on Save (Project)",
+  get = function()
+    return require("utils.format").projects.get()
+  end,
+  set = function(enabled)
+    require("utils.format").projects.set(enabled)
+  end,
+}):map("<leader>uf")
 
 -- commenting
 vim.keymap.set("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
