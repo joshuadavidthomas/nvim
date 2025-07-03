@@ -1,6 +1,6 @@
 ---@type vim.lsp.Config
 return {
-  cmd = { "ruff", "server" },
+  cmd = { "uv", "run", "--with", "ruff", "ruff", "server" },
   cmd_env = { RUFF_TRACE = "messages" },
   filetypes = { "python" },
   init_options = {

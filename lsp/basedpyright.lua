@@ -15,7 +15,7 @@ end
 
 ---@type vim.lsp.Config
 return {
-  cmd = { "basedpyright-langserver", "--stdio" },
+  cmd = { "uv", "run", "--with", "basedpyright", "basedpyright-langserver", "--stdio" },
   commands = {
     PyrightSetPythonPath = {
       set_python_path,
