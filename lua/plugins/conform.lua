@@ -3,7 +3,7 @@ return {
   {
     "stevearc/conform.nvim",
     dependencies = {
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
     },
     event = "LazyFile",
     cmd = "ConformInfo",
