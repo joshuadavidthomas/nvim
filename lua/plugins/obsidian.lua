@@ -1,7 +1,3 @@
-local p = require("utils.path")
-
-local notes_vault = p.platformdirs().home .. "/Documents/notes"
-
 return {
   "obsidian-nvim/obsidian.nvim",
   version = "*", -- use latest release instead of latest commit
@@ -16,7 +12,9 @@ return {
     workspaces = {
       {
         name = "notes",
-        path = notes_vault,
+        path = function()
+          return require("utils.path").platformdirs().home .. "/notes"
+        end,
       },
     },
   },
