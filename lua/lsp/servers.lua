@@ -50,18 +50,29 @@ function M.ensure_installed(servers)
 
   mr.refresh(function()
     for _, server in ipairs(servers) do
+      local config = M.get_config(server)
+      if config and config.cmd then
+        local cmd = config.cmd[1]
+        if vim.fn.executable(cmd) == 1 then
+          -- already available on PATH
+          goto continue
+        end
+      end
+
       local pkg_name = server
-      local has_mappings, mapping = pcall(require, "mason-lspconfig.mappings.server")
+      local has_mappings, mappings = pcall(require, "mason-lspconfig.mappings")
 
       if has_mappings then
-        pkg_name = mapping.lspconfig_to_package[server] or server
+        local server_mapping = mappings.get_mason_map()
+        pkg_name = server_mapping.lspconfig_to_package[server] or server
       end
 
-      ---@diagnostic disable-next-line: redefined-local
-      local p = mr.get_package(pkg_name)
-      if p and not p:is_installed() then
-        p:install()
+      local has_pkg, pkg = pcall(mr.get_package, pkg_name)
+      if has_pkg and pkg and not pkg:is_installed() then
+        pkg:install()
       end
+
+      ::continue::
     end
   end)
 end
