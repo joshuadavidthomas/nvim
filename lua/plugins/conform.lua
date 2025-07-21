@@ -54,10 +54,14 @@ return {
       mr:on("package:install:success", function()
         vim.defer_fn(function()
           if opts.format_on_save then
-            require("conform").format({
-              bufnr = vim.api.nvim_get_current_buf(),
-              timeout_ms = opts.format_on_save.timeout_ms,
-            })
+            local bufnr = vim.api.nvim_get_current_buf()
+            local format_opts = opts.format_on_save(bufnr)
+            if format_opts then
+              require("conform").format({
+                bufnr = bufnr,
+                timeout_ms = format_opts.timeout_ms,
+              })
+            end
           end
         end, 100)
       end)
