@@ -13,8 +13,6 @@ return {
     opts = function(_, opts)
       opts.ensure_installed = opts.ensure_installed or {}
       vim.list_extend(opts.ensure_installed, {
-        "bacon",
-        "bacon-ls",
         "codelldb",
       })
     end,
@@ -45,11 +43,11 @@ return {
             },
             -- Disable clippy lints for Rust if using bacon-ls
             -- to switch to rust-analyzer, change this to `true`
-            checkOnSave = false,
+            checkOnSave = true,
             diagnostics = {
               -- Disable diagnostics for Rust if using bacon-ls
               -- to switch to rust-analyzer, change this to `true`
-              enable = false,
+              enable = true,
             },
             procMacro = {
               enable = true,
