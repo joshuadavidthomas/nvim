@@ -34,10 +34,6 @@ return {
     end,
   },
   {
-    "mason-org/mason-registry",
-    event = "LazyFile",
-  },
-  {
     "mason-org/mason-lspconfig.nvim",
     event = "LazyFile",
   },
