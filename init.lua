@@ -56,6 +56,7 @@ M.setup = function()
     spec = {
       { import = "plugins" },
       { import = "plugins.lang" },
+      { import = "plugins.mini" },
     },
   })
   require("config").setup()
