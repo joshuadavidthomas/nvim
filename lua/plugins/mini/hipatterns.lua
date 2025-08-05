@@ -41,9 +41,27 @@ end
 
 -- Define color format specifications
 local color_formats = {
+  hex_color = {
+    inline_pattern = "#%x%x%x%x%x%x%f[^%x%w]",
+    dot_pattern = "()#%x%x%x%x%x%x()%f[^%x%w]",
+    extract = "(#%x%x%x%x%x%x)",
+    process = function(hex)
+      return hex
+    end,
+  },
+  hex_shorthand = {
+    inline_pattern = "()#%x%x%x()%f[^%x%w]",
+    dot_pattern = "()#%x%x%x()%f[^%x%w]",
+    extract = "#(%x)(%x)(%x)",
+    process = function(r, g, b)
+      return "#" .. r .. r .. g .. g .. b .. b
+    end,
+  },
   hsl = {
-    -- Pattern with empty captures to mark the content inside parens
-    pattern = "hsl%(()%s*%d+%s*,%s*%d+%%%s*,%s*%d+%%%s*()%)",
+    -- Pattern for inline: highlight content inside parens
+    inline_pattern = "hsl%(()%s*%d+%s*,%s*%d+%%%s*,%s*%d+%%%s*()%)",
+    -- Pattern for dot: match entire function call  
+    dot_pattern = "()hsl%(%s*%d+%s*,%s*%d+%%%s*,%s*%d+%%%s*%)()",
     -- Pattern with captures for extraction
     extract = "hsl%(%s*(%d+)%s*,%s*(%d+)%%%s*,%s*(%d+)%%%s*%)",
     -- Convert captured values to color object
@@ -52,35 +70,40 @@ local color_formats = {
     end,
   },
   hsla = {
-    pattern = "hsla%(()%s*%d+%s*,%s*%d+%%%s*,%s*%d+%%%s*,%s*[%d%.]+%s*()%)",
+    inline_pattern = "hsla%(()%s*%d+%s*,%s*%d+%%%s*,%s*%d+%%%s*,%s*[%d%.]+%s*()%)",
+    dot_pattern = "()hsla%(%s*%d+%s*,%s*%d+%%%s*,%s*%d+%%%s*,%s*[%d%.]+%s*%)()",
     extract = "hsla%(%s*(%d+)%s*,%s*(%d+)%%%s*,%s*(%d+)%%%s*,",
     process = function(h, s, l)
       return hsl_to_rgb(h, s, l)
     end,
   },
   rgb = {
-    pattern = "rgb%(()%s*%d+%s*,%s*%d+%s*,%s*%d+%s*()%)",
+    inline_pattern = "rgb%(()%s*%d+%s*,%s*%d+%s*,%s*%d+%s*()%)",
+    dot_pattern = "()rgb%(%s*%d+%s*,%s*%d+%s*,%s*%d+%s*%)()",
     extract = "rgb%(%s*(%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*%)",
     process = function(r, g, b)
       return { r = tonumber(r), g = tonumber(g), b = tonumber(b) }
     end,
   },
   rgba = {
-    pattern = "rgba%(()%s*%d+%s*,%s*%d+%s*,%s*%d+%s*,%s*[%d%.]+%s*()%)",
+    inline_pattern = "rgba%(()%s*%d+%s*,%s*%d+%s*,%s*%d+%s*,%s*[%d%.]+%s*()%)",
+    dot_pattern = "()rgba%(%s*%d+%s*,%s*%d+%s*,%s*%d+%s*,%s*[%d%.]+%s*%)()",
     extract = "rgba%(%s*(%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*,",
     process = function(r, g, b)
       return { r = tonumber(r), g = tonumber(g), b = tonumber(b) }
     end,
   },
   okhsl = {
-    pattern = "okhsl%(()%s*%d+%s+%d+%%%s+%d+%%%s*()%)",
+    inline_pattern = "okhsl%(()%s*%d+%s+%d+%%%s+%d+%%%s*()%)",
+    dot_pattern = "()okhsl%(%s*%d+%s+%d+%%%s+%d+%%%s*%)()",
     extract = "okhsl%(%s*(%d+)%s+(%d+)%%%s+(%d+)%%%s*%)",
     process = function(h, s, l)
       return { h = tonumber(h), s = tonumber(s), l = tonumber(l) }
     end,
   },
   oklch = {
-    pattern = "oklch%(()%s*[%d%.]+%s+[%d%.]+%s+[%d%.]+%s*/?%s*[%d%.]*%%?%s*()%)",
+    inline_pattern = "oklch%(()%s*[%d%.]+%s+[%d%.]+%s+[%d%.]+%s*/?%s*[%d%.]*%%?%s*()%)",
+    dot_pattern = "()oklch%(%s*[%d%.]+%s+[%d%.]+%s+[%d%.]+%s*/?%s*[%d%.]*%%?%s*%)()",
     extract = "oklch%(%s*([%d%.]+)%s+([%d%.]+)%s+([%d%.]+)",
     process = function(l, c, h)
       -- mini.colors expects l in [0,100] range
@@ -91,12 +114,16 @@ local color_formats = {
 
 -- Create highlighter from format specification
 local function create_highlighter(format, opts)
+  -- Check if we should use dot style
+  local use_dot = opts.css.style == "dot"
+
   return {
     pattern = function()
       if not vim.tbl_contains(opts.css.ft, vim.bo.filetype) then
         return
       end
-      return format.pattern
+      -- Use the appropriate pattern based on style
+      return use_dot and format.dot_pattern or format.inline_pattern
     end,
     group = function(_, _, data)
       local match = data.full_match
@@ -110,12 +137,26 @@ local function create_highlighter(format, opts)
         return
       end
 
-      local hex = require("mini.colors").convert(color, "hex")
+      -- If color is already a hex string, use it directly
+      local hex
+      if type(color) == "string" and color:match("^#%x+$") then
+        hex = color
+      else
+        hex = require("mini.colors").convert(color, "hex")
+      end
+      
       if type(hex) == "string" then
-        return MiniHipatterns.compute_hex_color_group(hex, "bg")
+        -- For dot style, we need a foreground color, not background
+        return MiniHipatterns.compute_hex_color_group(hex, use_dot and "fg" or "bg")
       end
     end,
-    extmark_opts = { priority = 2000 },
+    extmark_opts = use_dot and function(_, _, data)
+      return {
+        virt_text = { { "● ", data.hl_group } },
+        virt_text_pos = "inline",
+        priority = 2000,
+      }
+    end or { priority = 2000 },
   }
 end
 
@@ -145,6 +186,8 @@ return {
           "svelte",
           "astro",
         },
+        -- Style can be "inline" (highlight the color values) or "dot" (show colored dot before)
+        style = "dot",
       },
       tailwind = {
         ft = {
@@ -167,21 +210,7 @@ return {
         -- compact: only the color will be highlighted
         style = "full",
       },
-      highlighters = {
-        hex_color = hi.gen_highlighter.hex_color({ priority = 2000 }),
-        shorthand = {
-          pattern = "()#%x%x%x()%f[^%x%w]",
-          group = function(_, _, data)
-            ---@type string
-            local match = data.full_match
-            local r, g, b = match:sub(2, 2), match:sub(3, 3), match:sub(4, 4)
-            local hex_color = "#" .. r .. r .. g .. g .. b .. b
-
-            return MiniHipatterns.compute_hex_color_group(hex_color, "bg")
-          end,
-          extmark_opts = { priority = 2000 },
-        },
-      },
+      highlighters = {},
     }
   end,
   config = function(_, opts)
@@ -228,6 +257,7 @@ return {
 
     -- Add CSS color highlighters if css config is present
     if type(opts.css) == "table" then
+      -- Add all color highlighters from the formats table
       for name, format in pairs(color_formats) do
         opts.highlighters[name] = create_highlighter(format, opts)
       end

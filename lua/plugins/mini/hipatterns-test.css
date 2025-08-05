@@ -1,0 +1,120 @@
+/* Comprehensive CSS Color Highlighting Test */
+:root {
+  /* Standard hex colors */
+  --hex-6: #ff0000;
+  --hex-3: #f00;
+  --hex-uppercase: #FF00FF;
+  --hex-mixed: #FfBb00;
+
+  /* RGB colors - standard */
+  --rgb-red: rgb(255, 0, 0);
+  --rgb-green: rgb(0, 255, 0);
+  --rgb-blue: rgb(0, 0, 255);
+  --rgb-gray: rgb(128, 128, 128);
+  --rgb-spaces: rgb(  255  ,  128  ,  0  );
+  --rgb-no-spaces: rgb(255,128,0);
+
+  /* RGBA colors - with alpha */
+  --rgba-red-50: rgba(255, 0, 0, 0.5);
+  --rgba-green-80: rgba(0, 255, 0, 0.8);
+  --rgba-blue-decimal: rgba(0, 0, 255, .3);
+  --rgba-spaces: rgba(  128  ,  128  ,  128  ,  0.5  );
+  --rgba-no-spaces: rgba(255,128,0,0.75);
+  --rgba-alpha-1: rgba(255, 0, 255, 1);
+  --rgba-alpha-0: rgba(0, 0, 0, 0);
+
+  /* HSL colors - standard CSS */
+  --hsl-red: hsl(0, 100%, 50%);
+  --hsl-green: hsl(120, 100%, 50%);
+  --hsl-blue: hsl(240, 100%, 50%);
+  --hsl-yellow: hsl(60, 100%, 50%);
+  --hsl-cyan: hsl(180, 100%, 50%);
+  --hsl-magenta: hsl(300, 100%, 50%);
+  --hsl-gray: hsl(0, 0%, 50%);
+  --hsl-white: hsl(0, 0%, 100%);
+  --hsl-black: hsl(0, 0%, 0%);
+  --hsl-spaces: hsl(  180  ,  50%  ,  50%  );
+  --hsl-no-spaces: hsl(90,75%,40%);
+
+  /* HSLA colors - with alpha */
+  --hsla-red-50: hsla(0, 100%, 50%, 0.5);
+  --hsla-green-80: hsla(120, 100%, 50%, 0.8);
+  --hsla-blue-decimal: hsla(240, 100%, 50%, .3);
+  --hsla-spaces: hsla(  180  ,  50%  ,  50%  ,  0.5  );
+  --hsla-no-spaces: hsla(270,60%,70%,0.9);
+  --hsla-alpha-1: hsla(45, 100%, 50%, 1);
+  --hsla-alpha-0: hsla(0, 0%, 0%, 0);
+
+  /* OKHSL colors - perceptually uniform */
+  --okhsl-red: okhsl(30 100% 60%);
+  --okhsl-green: okhsl(135 100% 60%);
+  --okhsl-blue: okhsl(270 100% 60%);
+  --okhsl-yellow: okhsl(90 100% 70%);
+  --okhsl-gray: okhsl(0 0% 50%);
+  --okhsl-spaces: okhsl( 180  50%  50% );
+  --okhsl-no-spaces: okhsl(45 80% 65%);
+
+  /* OKLCH colors - standard */
+  --oklch-white: oklch(1 0 0);
+  --oklch-black: oklch(0 0 0);
+  --oklch-red: oklch(0.6 0.2 30);
+  --oklch-green: oklch(0.6 0.2 135);
+  --oklch-blue: oklch(0.6 0.2 270);
+  --oklch-decimal: oklch(0.141 0.005 285.823);
+  --oklch-spaces: oklch(  0.5  0.1  180  );
+  --oklch-no-spaces: oklch(0.7 0.15 90);
+
+  /* OKLCH with alpha - various formats */
+  --oklch-alpha-percent: oklch(1 0 0 / 10%);
+  --oklch-alpha-decimal: oklch(1 0 0 / 0.5);
+  --oklch-alpha-no-percent: oklch(0.8 0.1 45 / 80%);
+  --oklch-alpha-spaces: oklch(  0.5  0.1  180  /  50%  );
+  --oklch-alpha-no-spaces: oklch(0.6 0.2 270/0.75);
+  --oklch-alpha-1: oklch(0.5 0.15 120 / 1);
+  --oklch-alpha-0: oklch(0.5 0.15 120 / 0);
+}
+
+/* Test in different contexts */
+.color-test {
+  /* Inline usage */
+  color: rgb(255, 128, 0);
+  background-color: hsl(200, 50%, 50%);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  outline-color: hsla(120, 100%, 25%, 0.8);
+  text-shadow: 0 0 10px oklch(0.8 0.1 60);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 0 0 2px rgb(59, 130, 246);
+}
+
+/* Edge cases */
+.edge-cases {
+  /* Colors at boundaries */
+  --rgb-min: rgb(0, 0, 0);
+  --rgb-max: rgb(255, 255, 255);
+  --hsl-min-sat: hsl(180, 0%, 50%);
+  --hsl-max-sat: hsl(180, 100%, 50%);
+  --hsl-min-light: hsl(180, 50%, 0%);
+  --hsl-max-light: hsl(180, 50%, 100%);
+
+  /* Unusual but valid spacing */
+  --space-chaos: rgb(   100   ,   150   ,   200   );
+  --space-tabs: rgb(	100	,	150	,	200	);
+
+  /* Multiple colors in one line */
+  background: linear-gradient(rgb(255, 0, 0), hsl(120, 100%, 50%), oklch(0.6 0.2 240));
+}
+
+/* Complex selectors with colors */
+a:hover {
+  color: hsl(220, 90%, 40%);
+}
+
+button:active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* CSS custom properties usage */
+.using-vars {
+  color: var(--rgb-red);
+  background: var(--hsl-blue);
+  border-color: var(--oklch-green);
+}
