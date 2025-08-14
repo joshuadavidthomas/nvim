@@ -6,6 +6,7 @@ return {
     "nvim-lua/plenary.nvim",
   },
   opts = {
+    legacy_commands = false, -- use new-style commands (e.g. :Obsidian backlinks)
     completion = {
       blink = true,
     },

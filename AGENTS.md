@@ -1,0 +1,21 @@
+AGENTS guide for this repo (Neovim config + Python rplugin)
+
+- Install deps: uv sync (uses pyproject.toml/uv.lock; workspace includes rplugin)
+- Bootstrap/Update Neovim plugins: just bootstrap CONFIG_DIR="nvim.new" | just update
+- Register Python rplugin: nvim --headless -u init.lua -c "UpdateRemotePlugins" +qa
+- Lint Python: uvx ruff check .   |   Auto-fix: uvx ruff check . --fix
+- Format Python: uvx ruff format .   (Black-compatible: line-length 88, double quotes, 4-space indent)
+- Type check Python: uvx basedpyright . rplugin/python3/spotify
+- (Optional) Build rplugin wheel: uvx hatch build -C rplugin/python3/spotify
+- Test (if pytest added): uvx pytest -q   |   Single test: uvx pytest path/to/test_file.py::TestClass::test_name
+- Lua formatting: stylua .  (configured by .stylua.toml: width 160, 2-space, Unix EOL)
+- Lua linting: prefer lua_ls during development; luacheck optional if installed
+- Python imports: one import per line (isort: force-single-line), absolute imports, required: from __future__ import annotations
+- Python typing: annotate all functions/vars; avoid Any (basedpyright: reportAny/ExplicitAny=false but prefer precise types); Pydantic v2 models ok
+- Python naming: snake_case for functions/vars, PascalCase for classes, UPPER_SNAKE for constants
+- Lua style: local everything; snake_case for vars/functions; module requires via require("lua_path.module")
+- Error handling Python: no bare except; raise specific errors; include context; avoid silent pass; use typing.Result-like patterns if useful
+- Error handling Lua: use pcall/xpcall; report via vim.notify(msg, vim.log.levels.ERROR) with context
+- Git: keep commits focused (<=72 chars, imperative). Do not commit secrets or local paths
+- CI/tools: none configured; run commands locally as above
+- AI rules: no Cursor (.cursor/rules, .cursorrules) or Copilot (.github/copilot-instructions.md) files present

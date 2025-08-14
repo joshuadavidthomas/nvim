@@ -21,9 +21,12 @@ return {
     priority = 1000,
     opts = {
       style = "moon",
+      on_highlights = function(hl, c)
+        local Util = require("tokyonight.util")
+        hl.TreesitterContext = {
+          bg = Util.blend_bg(c.fg_gutter, 0.4),
+        }
+      end,
     },
-    init = function()
-      require("tokyonight").load()
-    end,
   },
 }

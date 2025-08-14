@@ -81,6 +81,9 @@ vim.keymap.set("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning"
 vim.keymap.set("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 Snacks.toggle.diagnostics():map("<leader>ud")
 
+-- word wrap
+Snacks.toggle.option("wrap", { name = "Word Wrap" }):map("<leader>uW")
+
 -- cursor movement in Wezterm
 if require("utils.term").is_wezterm then
   local nav = {
@@ -119,3 +122,80 @@ end
 vim.keymap.set("n", "<leader>nn", function()
   require("utils.notes").toggle_notes_sidebar()
 end, { desc = "Toggle Notes" })
+
+-- Treesitter InspectTree toggle panel on the right
+do
+  local TSInspect = { winid = nil, bufnr = nil }
+
+  local function find_tsinspect_win()
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+      local buf = vim.api.nvim_win_get_buf(win)
+      if vim.b[buf] and vim.b[buf].ts_inspect then
+        return win, buf
+      end
+    end
+  end
+
+  local function close_tsinspect()
+    local win = TSInspect.winid
+    if win and vim.api.nvim_win_is_valid(win) then
+      pcall(vim.api.nvim_win_close, win, true)
+    end
+    TSInspect.winid = nil
+    TSInspect.bufnr = nil
+  end
+
+  local function open_tsinspect()
+    if not (vim.treesitter and vim.treesitter.inspect_tree) then
+      vim.notify("InspectTree not available in this Neovim", vim.log.levels.ERROR)
+      return
+    end
+
+    local before = {}
+    for _, w in ipairs(vim.api.nvim_list_wins()) do
+      before[w] = true
+    end
+
+    local src_win = vim.api.nvim_get_current_win()
+
+    vim.treesitter.inspect_tree({
+      command = "rightbelow 60vnew",
+      title = function(src_bufnr)
+        local name = vim.api.nvim_buf_get_name(src_bufnr)
+        name = name ~= "" and vim.fn.fnamemodify(name, ":t") or "[No Name]"
+        return "Treesitter Syntax Tree • " .. name
+      end,
+    })
+
+    local new_win
+    for _, w in ipairs(vim.api.nvim_list_wins()) do
+      if not before[w] then
+        new_win = w
+        break
+      end
+    end
+
+    if new_win then
+      TSInspect.winid = new_win
+      TSInspect.bufnr = vim.api.nvim_win_get_buf(new_win)
+      vim.b[TSInspect.bufnr].ts_inspect = true
+      if vim.api.nvim_win_is_valid(src_win) then
+        pcall(vim.api.nvim_set_current_win, src_win)
+      end
+    end
+  end
+
+  local function toggle_tsinspect()
+    local win, buf = find_tsinspect_win()
+    if win then
+      TSInspect.winid = win
+      TSInspect.bufnr = buf
+      close_tsinspect()
+    else
+      open_tsinspect()
+    end
+  end
+
+  vim.keymap.set("n", "<leader>cT", toggle_tsinspect, { desc = "Show TS Tree" })
+  vim.api.nvim_create_user_command("InspectTreeToggle", toggle_tsinspect, { desc = "Toggle Treesitter InspectTree panel" })
+end

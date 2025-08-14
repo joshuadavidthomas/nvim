@@ -120,8 +120,9 @@ function M.get_gitignore_patterns(startpath)
         for _, pattern in ipairs(ignore_patterns) do
           table.insert(patterns, pattern)
         end
-        return path == git_root
       end
+      -- Always stop at the repo root, even if there's no .gitignore there
+      return path == git_root
     end)
     return patterns
   end

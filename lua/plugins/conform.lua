@@ -16,7 +16,7 @@ return {
       format_on_save = function(bufnr)
         local bufpath = vim.api.nvim_buf_get_name(bufnr)
         if require("utils.format").projects.is_disabled(bufpath) then
-          return false
+          return
         end
         return {
           async = false,

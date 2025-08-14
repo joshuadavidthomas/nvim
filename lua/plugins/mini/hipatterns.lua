@@ -60,7 +60,7 @@ local color_formats = {
   hsl = {
     -- Pattern for inline: highlight content inside parens
     inline_pattern = "hsl%(()%s*%d+%s*,%s*%d+%%%s*,%s*%d+%%%s*()%)",
-    -- Pattern for dot: match entire function call  
+    -- Pattern for dot: match entire function call
     dot_pattern = "()hsl%(%s*%d+%s*,%s*%d+%%%s*,%s*%d+%%%s*%)()",
     -- Pattern with captures for extraction
     extract = "hsl%(%s*(%d+)%s*,%s*(%d+)%%%s*,%s*(%d+)%%%s*%)",
@@ -144,7 +144,7 @@ local function create_highlighter(format, opts)
       else
         hex = require("mini.colors").convert(color, "hex")
       end
-      
+
       if type(hex) == "string" then
         -- For dot style, we need a foreground color, not background
         return MiniHipatterns.compute_hex_color_group(hex, use_dot and "fg" or "bg")
@@ -152,7 +152,7 @@ local function create_highlighter(format, opts)
     end,
     extmark_opts = use_dot and function(_, _, data)
       return {
-        virt_text = { { "● ", data.hl_group } },
+        virt_text = { { "⬤ ", data.hl_group } },
         virt_text_pos = "inline",
         priority = 2000,
       }
@@ -188,6 +188,20 @@ return {
         },
         -- Style can be "inline" (highlight the color values) or "dot" (show colored dot before)
         style = "dot",
+      },
+      hex = {
+        ft = {
+          -- Add any filetypes where you want hex colors
+          "lua",
+          "python",
+          "rust",
+          "go",
+          "json",
+          "yaml",
+          "toml",
+          "markdown",
+        },
+        style = "dot", -- or "inline"
       },
       tailwind = {
         ft = {
@@ -260,6 +274,24 @@ return {
       -- Add all color highlighters from the formats table
       for name, format in pairs(color_formats) do
         opts.highlighters[name] = create_highlighter(format, opts)
+      end
+    end
+
+    if type(opts.hex) == "table" then
+      -- Only add hex patterns, reusing the existing format definitions
+      local hex_formats = {
+        hex_color = color_formats.hex_color,
+        hex_shorthand = color_formats.hex_shorthand,
+      }
+
+      for name, format in pairs(hex_formats) do
+        -- Create a separate highlighter with different filetype list
+        opts.highlighters[name .. "_extended"] = create_highlighter(format, {
+          css = {
+            ft = opts.hex.ft,
+            style = opts.hex.style or "dot",
+          },
+        })
       end
     end
 

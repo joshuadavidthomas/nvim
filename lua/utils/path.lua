@@ -44,6 +44,14 @@ function M.is_file(filename)
   return M.exists(filename) == "file"
 end
 
+--- Determine if a path is a readable regular file (like vim.fn.filereadable).
+--- Follows symlinks. Returns false for directories and unreadable files.
+--- @param filename string The path to check.
+--- @return boolean True if the path is a readable regular file.
+function M.is_readable_file(filename)
+  return vim.fn.filereadable(filename) == 1
+end
+
 --- Check if a path is the filesystem root.
 --- @param path string The path to check.
 --- @return boolean True if the path is the root of the filesystem, false otherwise.
@@ -254,13 +262,40 @@ end
 --- Determine if a file should be hidden, optionally considering .gitignore patterns if in a Git repository.
 --- @param name string: The name of the file to check.
 --- @param current_dir string?: The name of the current directory.
+--- @param sentinel string?: Name of ancestor sentinel file to bypass gitignore. Set nil/empty to disable.
 --- @return boolean True if the file should be hidden, false otherwise.
-function M.is_hidden_file(name, current_dir)
+function M.is_hidden_file(name, current_dir, sentinel)
   if vim.startswith(name, ".") then
     return true
   end
 
   local cwd = current_dir or vim.fn.fnamemodify(name, ":p:h")
+
+  -- Check for sentinel file in this dir or any ancestor, but do not cross
+  -- into a different git repository. If present, bypass gitignore-based hiding.
+  local git = require("utils.git")
+  local git_root = git.find_git_ancestor(cwd)
+  local sentinel_name = sentinel
+  if sentinel_name and sentinel_name ~= "" then
+    local found_sentinel = false
+    M.search_ancestors(cwd, function(path)
+      if M.is_file(M.join(path, sentinel_name)) then
+        found_sentinel = true
+        return true
+      end
+      -- Always stop at the current git root (if any) to avoid leaking sentinel into child repos
+      if git_root and path == git_root then
+        return true
+      end
+      return false
+    end)
+    if found_sentinel then
+      -- Could optionally read patterns from the sentinel file instead.
+      -- For now, just show everything except dotfiles.
+      return false
+    end
+  end
+
   local gitignore_patterns = require("utils.git").get_gitignore_patterns(cwd)
   if gitignore_patterns then
     for _, pattern in ipairs(gitignore_patterns) do

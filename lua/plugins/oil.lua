@@ -12,7 +12,7 @@ return {
     view_options = {
       is_hidden_file = function(name, _)
         local current_dir = require("oil").get_current_dir()
-        return require("utils.path").is_hidden_file(name, current_dir)
+        return require("utils.path").is_hidden_file(name, current_dir, ".oilignore")
       end,
     },
   },
