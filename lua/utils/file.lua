@@ -13,6 +13,24 @@ function M.read_file(path)
   return content
 end
 
+--- Write lines to a file.
+--- @param path string: The path to the file.
+--- @param lines string[]: Array of lines to write to the file.
+--- @return boolean: true if successful, false if an error occurred.
+function M.write_file(path, lines)
+  local file = io.open(path, "w")
+  if not file then
+    return false
+  end
+
+  for _, line in ipairs(lines) do
+    file:write(line .. "\n")
+  end
+
+  file:close()
+  return true
+end
+
 --- Get a timestamp of when a file was last modified.
 --- @param path string: The path to the file.
 --- @return number|nil: The last modification time as a Unix timestamp, or nil if an error occurred.

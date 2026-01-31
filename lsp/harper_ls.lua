@@ -26,7 +26,7 @@ return {
     "typescriptreact",
     "typst",
   },
-  on_attach = function(_, bufnr)
+  on_attach = function()
     require("snacks")
       .toggle({
         name = "Grammar Checker",
@@ -35,12 +35,7 @@ return {
         end,
         set = function(state)
           vim.g.harper_ls_disable = not state
-
-          if state then
-            require("lsp.servers").enable("harper_ls", bufnr)
-          else
-            require("lsp.servers").disable("harper_ls", bufnr)
-          end
+          vim.lsp.enable("harper_ls", state)
         end,
       })
       :map("<leader>ug")

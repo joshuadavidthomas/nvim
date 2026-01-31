@@ -5,6 +5,20 @@ local v = require("utils.vim")
 
 local M = {}
 
+-- cache for git ignore checks
+local ignore_cache = {}
+
+-- run a command, return true on exit code 0
+local function sys_check(cmd)
+  if vim.system then
+    local res = vim.system(cmd):wait()
+    return res.code == 0
+  else
+    vim.fn.system(cmd)
+    return vim.v.shell_error == 0
+  end
+end
+
 --- Find the closest git repository ancestor directory.
 --- This function was copied and adapted from https://github.com/neovim/nvim-lspconfig
 --- nvim-lspconfig is Copyright Neovim contributors and is licensed under the Apache 2.0 license.
@@ -155,9 +169,9 @@ function M.get_remote_url(path, remote_name)
   local config = M.get_git_config(path)
   if config then
     local remote = config.remote
-    if remote or remote[remote_name] then
+    if remote and remote[remote_name] then
       local remote_config = remote[remote_name]
-      if remote_config or remote_config.url then
+      if remote_config and remote_config.url then
         return remote_config.url
       end
     end
@@ -291,6 +305,48 @@ function M.get_default_branch(path)
     end
   end
   return nil
+end
+
+--- Return true if abs_path is ignored by Git
+--- @param abs_path string
+function M.is_ignored(abs_path)
+  local git_root = M.find_git_ancestor(abs_path)
+  if not git_root then
+    return false
+  end
+
+  local rp_abs = vim.uv.fs_realpath(abs_path) or abs_path
+  local rp_root = vim.uv.fs_realpath(git_root) or git_root
+
+  if not (vim.startswith(rp_abs, rp_root .. "/") or rp_abs == rp_root) then
+    -- normalization failed or different device; don't hide
+    return false
+  end
+
+  if rp_abs == rp_root then
+    return false
+  end
+
+  local rel = rp_abs:sub(#rp_root + 2)
+  if not rel or rel == "" then
+    return false
+  end
+
+  local key = rp_root .. "\0" .. rel
+  local cached = ignore_cache[key]
+  if cached ~= nil then
+    return cached
+  end
+
+  local ignored = sys_check({ "git", "-C", rp_root, "check-ignore", "-q", "--no-index", "--", rel })
+  ignore_cache[key] = ignored
+  return ignored
+end
+
+function M.clear_ignore_cache()
+  for k in pairs(ignore_cache) do
+    ignore_cache[k] = nil
+  end
 end
 
 return M

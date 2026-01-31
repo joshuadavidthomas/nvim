@@ -101,6 +101,7 @@ function M.setup(opts)
   local server_list = servers.get_servers()
 
   vim.lsp.enable(server_list)
+  require("lsp.state").setup()
 
   local augroup = vim.api.nvim_create_augroup("LspLazyInit", { clear = true })
   vim.api.nvim_create_autocmd(require("utils.lazy").lazyfile_event, {

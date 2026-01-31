@@ -123,6 +123,11 @@ vim.keymap.set("n", "<leader>nn", function()
   require("utils.notes").toggle_notes_sidebar()
 end, { desc = "Toggle Notes" })
 
+-- examine/explore
+vim.keymap.set("n", "<leader>xq", function()
+  require("quicker").toggle({ focus = true })
+end, { desc = "Toggle quickfix" })
+
 -- Treesitter InspectTree toggle panel on the right
 do
   local TSInspect = { winid = nil, bufnr = nil }

@@ -296,18 +296,54 @@ function M.is_hidden_file(name, current_dir, sentinel)
     end
   end
 
-  local gitignore_patterns = require("utils.git").get_gitignore_patterns(cwd)
-  if gitignore_patterns then
-    for _, pattern in ipairs(gitignore_patterns) do
-      if pattern ~= "" then
-        local prepared_pattern = pattern
-        if pattern:sub(-1) == "/" then
-          prepared_pattern = pattern:sub(1, -2)
+  -- Git-backed ignore check (full path; honors anchors, negations, nested ignores)
+  local item_path = M.join(cwd, name)
+  if git.is_ignored(item_path) then
+    return true
+  end
+
+  -- Fallback: if not in a Git repo, honor local .gitignore basenames
+  if not git_root then
+    local local_gitignore = M.join(cwd, ".gitignore")
+    if M.is_file(local_gitignore) then
+      local patterns = git.parse_gitignore(local_gitignore)
+      for _, pattern in ipairs(patterns) do
+        if pattern ~= "" then
+          local pat = pattern
+          if pat:sub(-1) == "/" then
+            pat = pat:sub(1, -2)
+          end
+          local regex = vim.fn.glob2regpat(pat)
+          if vim.fn.match(name, regex) ~= -1 then
+            return true
+          end
         end
-        local regex_pattern = vim.fn.glob2regpat(prepared_pattern)
-        if vim.fn.match(name, regex_pattern) ~= -1 then
-          return true
+      end
+    end
+  end
+
+  -- Hide directories that have `.gitignore` with catch-all patterns
+  -- (e.g., `.venv` with *)
+  if M.is_dir(item_path) then
+    local dir_gitignore = M.join(item_path, ".gitignore")
+    if M.is_file(dir_gitignore) then
+      local patterns = git.parse_gitignore(dir_gitignore)
+
+      -- Check if there's a * pattern but also exclusions
+      local has_match_all = false
+      local has_exclusions = false
+
+      for _, pattern in ipairs(patterns) do
+        if pattern == "*" or pattern == "**" then
+          has_match_all = true
+        elseif vim.startswith(pattern, "!") then
+          has_exclusions = true
         end
+      end
+
+      -- Only hide if we have a match-all pattern with no exclusions
+      if has_match_all and not has_exclusions then
+        return true
       end
     end
   end

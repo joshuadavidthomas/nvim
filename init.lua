@@ -23,6 +23,9 @@ end
 M.setup = function()
   M.lazy_init()
   require("lazy").setup({
+    rocks = {
+      enabled = false,
+    },
     checker = {
       enabled = true,
     },

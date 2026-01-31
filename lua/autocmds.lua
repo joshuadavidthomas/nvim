@@ -132,3 +132,23 @@ vim.api.nvim_create_user_command("FormatEnable", function()
 end, {
   desc = "Re-enable autoformat-on-save",
 })
+
+-- Clear cached Git ignore checks when ignore files change
+vim.api.nvim_create_autocmd("BufWritePost", {
+  group = augroup("git-ignore-cache"),
+  pattern = { ".gitignore", "*/.gitignore", "*/info/exclude" },
+  callback = function()
+    pcall(function()
+      require("utils.git").clear_ignore_cache()
+    end)
+  end,
+})
+
+-- Treat .yaml.tpl and .yml.tpl files as yaml.tpl
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  group = augroup("yaml-template-filetype"),
+  pattern = { "*.yaml.tpl", "*.yml.tpl" },
+  callback = function(args)
+    vim.bo[args.buf].filetype = "yaml.tpl"
+  end,
+})

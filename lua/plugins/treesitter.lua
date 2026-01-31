@@ -16,6 +16,12 @@ return {
       require("lazy.core.loader").add_to_rtp(plugin)
       require("nvim-treesitter.query_predicates")
     end,
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+      
+      -- Register yaml parser for yaml.tpl filetype
+      vim.treesitter.language.register("yaml", "yaml.tpl")
+    end,
     cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
     keys = {
       { "<c-space>", desc = "Increment Selection" },
@@ -51,6 +57,7 @@ return {
         "jsonc",
         "just",
         "liquid",
+        "log",
         "lua",
         "luadoc",
         "luap",

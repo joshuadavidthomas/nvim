@@ -60,15 +60,14 @@ M.projects = {}
 
 -- Get current project root
 function M.projects.get_current_project()
-  local git = require("utils.git")
-  local path = vim.fn.expand("%:p")
-  return git.find_git_ancestor(path) or vim.fn.getcwd()
+  local project = require("utils.project")
+  return project.get_path_root()
 end
 
 -- Check if formatting is disabled for current project
 function M.projects.is_disabled(path)
-  local git = require("utils.git")
-  local project_root = git.find_git_ancestor(path) or vim.fn.getcwd()
+  local project = require("utils.project")
+  local project_root = project.get_path_root(path)
   local disabled_projects = load_disabled_projects()
   return vim.tbl_contains(disabled_projects, project_root)
 end
@@ -106,14 +105,13 @@ function M.projects.list()
     return
   end
 
-  local git = require("utils.git")
-  local current_path = vim.fn.expand("%:p")
-  local current_project = git.find_git_ancestor(current_path) or vim.fn.getcwd()
+  local project = require("utils.project")
+  local current_project = project.get_path_root()
 
   local lines = { "Projects with formatting disabled:" }
-  for _, project in ipairs(disabled_projects) do
-    local marker = project == current_project and " (current)" or ""
-    table.insert(lines, "  • " .. project .. marker)
+  for _, proj in ipairs(disabled_projects) do
+    local marker = proj == current_project and " (current)" or ""
+    table.insert(lines, "  • " .. proj .. marker)
   end
   vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
 end

@@ -95,6 +95,20 @@ function M.get()
         return Snacks.words.is_enabled()
       end,
     },
+    {
+      "<leader>cs",
+      function()
+        require("lsp.picker").pick_server(0, false)
+      end,
+      desc = "Toggle LSP Server (Project)",
+    },
+    {
+      "<leader>cS",
+      function()
+        require("lsp.picker").pick_server(0, true)
+      end,
+      desc = "Toggle LSP Server (Global)",
+    },
   }
 
   return M._keys

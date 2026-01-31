@@ -81,6 +81,13 @@ return {
           module = "render-markdown.integ.blink",
           fallbacks = { "lsp" },
         },
+        snippets = {
+          module = "blink.cmp.sources.snippets",
+          opts = {
+            friendly_snippets = true,
+            search_paths = { vim.fn.stdpath("config") .. "/snippets" },
+          },
+        },
       },
     },
     cmdline = {

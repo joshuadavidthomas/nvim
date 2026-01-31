@@ -1,0 +1,52 @@
+{
+  "Em dash": {
+    "prefix": ["emdash", "em", "3dash", "threedash"],
+    "body": ["—"],
+    "description": "Insert em dash (—)"
+  },
+  "En dash": {
+    "prefix": ["endash", "en", "2dash", "twodash"],
+    "body": ["–"],
+    "description": "Insert en dash (–)"
+  },
+  "Horizontal ellipsis": {
+    "prefix": ["ellipsis", "dots", "3dots", "threedots"],
+    "body": ["…"],
+    "description": "Insert horizontal ellipsis (…)"
+  },
+  "Non-breaking space": {
+    "prefix": ["nbsp", "&nbsp"],
+    "body": [" "],
+    "description": "Insert non-breaking space"
+  },
+  "Figure dash": {
+    "prefix": ["figdash"],
+    "body": ["‒"],
+    "description": "Insert figure dash (‒)"
+  },
+  "Horizontal bar": {
+    "prefix": ["hbar"],
+    "body": ["―"],
+    "description": "Insert horizontal bar (―)"
+  },
+  "Minus sign": {
+    "prefix": ["minus"],
+    "body": ["−"],
+    "description": "Insert proper minus sign (−)"
+  },
+  "Soft hyphen": {
+    "prefix": ["soft-hyphen", "shy-hyphen"],
+    "body": ["\u00AD"],
+    "description": "Insert soft hyphen (­)"
+  },
+  "Em dash with hair spaces": {
+    "prefix": ["emdash-spaced", "emspaced"],
+    "body": ["\u200A—\u200A"],
+    "description": "Insert em dash with hair spaces (U+200A)"
+  },
+  "En dash with hair spaces": {
+    "prefix": ["endash-spaced", "enspaced"],
+    "body": ["\u200A–\u200A"],
+    "description": "Insert en dash with hair spaces (U+200A)"
+  }
+}

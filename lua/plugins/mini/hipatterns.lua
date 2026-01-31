@@ -224,10 +224,26 @@ return {
         -- compact: only the color will be highlighted
         style = "full",
       },
+      template_vars = {
+        ft = { "yaml.tpl" },
+      },
       highlighters = {},
     }
   end,
   config = function(_, opts)
+    -- Add template variable highlighter for yaml.tpl files
+    if type(opts.template_vars) == "table" then
+      opts.highlighters.template_vars = {
+        pattern = function()
+          if not vim.tbl_contains(opts.template_vars.ft, vim.bo.filetype) then
+            return
+          end
+          return "()%$%{[^}]+%}()"
+        end,
+        group = "@variable.parameter",
+        extmark_opts = { priority = 2000 },
+      }
+    end
     if type(opts.tailwind) == "table" then
       -- reset hl groups when colorscheme changes
       vim.api.nvim_create_autocmd("ColorScheme", {
