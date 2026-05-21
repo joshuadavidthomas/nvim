@@ -7,7 +7,19 @@ return {
     ---@type snacks.Config
     opts = {
       bigfile = { enabled = true },
-      indent = { enabled = true },
+      indent = {
+        enabled = true,
+        chunk = {
+          enabled = true,
+          char = {
+            corner_top = "╭",
+            corner_bottom = "╰",
+            horizontal = "─",
+            vertical = "│",
+            arrow = "─",
+          },
+        },
+      },
       input = { enabled = true },
       profiler = { enabled = true },
       quickfile = { enabled = true },
@@ -114,7 +126,22 @@ return {
       { "<leader>sm",      function() Snacks.picker.marks() end,                                   desc = "Marks" },
       { "<leader>sR",      function() Snacks.picker.resume() end,                                  desc = "Resume" },
       { "<leader>sq",      function() Snacks.picker.qflist() end,                                  desc = "Quickfix List" },
-      { "<leader>uC",      function() Snacks.picker.colorschemes() end,                            desc = "Colorschemes" },
+      { "<leader>uC",      function()
+        Snacks.picker.colorschemes({
+          confirm = function(picker, item)
+            picker:close()
+            if not item then
+              return
+            end
+
+            picker.preview.state.colorscheme = nil
+            vim.schedule(function()
+              vim.cmd.colorscheme(item.text)
+              require("utils.colorscheme").write(item.text)
+            end)
+          end,
+        })
+      end,                                                                                          desc = "Colorschemes" },
       { "<leader>sp",      function() Snacks.picker.projects() end,                                desc = "Projects" },
     },
   },
