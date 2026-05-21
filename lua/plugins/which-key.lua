@@ -22,6 +22,7 @@ return {
         },
         { "<leader>q", group = "quit/session" },
         { "<leader>u", group = "ui", icon = { icon = "󰙵 ", color = "cyan" } },
+        { "<leader>y", group = "yank" },
         {
           "<leader>w",
           group = "windows",

@@ -13,15 +13,15 @@ end
 -- Get project root for a buffer (always cached)
 function M.get_buffer_root(bufnr)
   bufnr = bufnr or 0
-  
+
   if cache[bufnr] then
     return cache[bufnr]
   end
-  
+
   local buf_path = vim.api.nvim_buf_get_name(bufnr)
   local path = buf_path ~= "" and buf_path or vim.fn.expand("%:p")
   local root = M.get_path_root(path)
-  
+
   cache[bufnr] = root
   return root
 end

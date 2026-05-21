@@ -24,8 +24,11 @@ vim.keymap.set("i", "<A-K>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
 vim.keymap.set("v", "<A-J>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 vim.keymap.set("v", "<A-K>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
--- yank an entire buffer
+-- yank
 vim.keymap.set("n", "yY", ":%y<cr>", { desc = "Yank buffer" })
+vim.keymap.set("n", "<leader>ys", function()
+  require("utils.secret").yank()
+end, { desc = "Yank Secret" })
 
 -- windows
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Go to Left Window", remap = true })

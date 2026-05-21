@@ -14,6 +14,33 @@ return {
   opts = {
     scope = "git", -- also try out "git_branch"
   },
+  config = function(_, opts)
+    local validate = vim.validate
+
+    vim.validate = function(...)
+      if select("#", ...) == 1 then
+        local spec = ...
+        if type(spec) == "table" then
+          local args = {}
+          for name, validator in pairs(spec) do
+            vim.list_extend(args, { name, validator[1], validator[2], validator[3] })
+          end
+          return validate(unpack(args))
+        end
+      end
+
+      return validate(...)
+    end
+
+    local ok, err = pcall(function()
+      require("grapple").setup(opts)
+    end)
+    vim.validate = validate
+
+    if not ok then
+      error(err)
+    end
+  end,
   keys = {
     { "<leader>tt", "<cmd>Grapple toggle<cr>", desc = "Toggle file tag" },
     { "<leader>tl", "<cmd>Grapple toggle_tags<cr>", desc = "List all tags" },

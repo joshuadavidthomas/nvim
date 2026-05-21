@@ -161,7 +161,7 @@ end
 --- @param func function The function to apply to each ancestor directory. Should return true to stop the search.
 --- @return string|nil The path of the first ancestor directory for which the function returns true, or nil if none do.
 function M.search_ancestors(startpath, func)
-  vim.validate({ func = { func, "f" } })
+  vim.validate("func", func, "function")
   if func(startpath) then
     return startpath
   end

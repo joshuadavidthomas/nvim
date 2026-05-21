@@ -42,6 +42,22 @@ function M.get()
     { "<leader>cc", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" }, has = "codeLens" },
     { "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens", mode = { "n" }, has = "codeLens" },
     {
+      "<leader>ci",
+      function()
+        Snacks.picker.lsp_incoming_calls()
+      end,
+      desc = "Incoming Calls",
+      has = "prepareCallHierarchy",
+    },
+    {
+      "<leader>co",
+      function()
+        Snacks.picker.lsp_outgoing_calls()
+      end,
+      desc = "Outgoing Calls",
+      has = "prepareCallHierarchy",
+    },
+    {
       "<leader>cR",
       function()
         Snacks.rename.rename_file()
@@ -127,7 +143,7 @@ function M.has(buffer, method)
   method = method:find("/") and method or "textDocument/" .. method
   local clients = vim.lsp.get_clients({ bufnr = buffer })
   for _, client in ipairs(clients) do
-    if client.supports_method(method) then
+    if client:supports_method(method) then
       return true
     end
   end
