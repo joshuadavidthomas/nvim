@@ -1,14 +1,5 @@
 return {
   {
-    "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = {
-        "ron",
-        "rust",
-      },
-    },
-  },
-  {
     "mason-org/mason.nvim",
     opts = function(_, opts)
       opts.ensure_installed = opts.ensure_installed or {}
@@ -19,7 +10,7 @@ return {
   },
   {
     "mrcjkb/rustaceanvim",
-    version = "^6",
+    version = "^9",
     ft = { "rust" },
     opts = {
       server = {

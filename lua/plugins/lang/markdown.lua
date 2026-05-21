@@ -5,8 +5,7 @@ return {
     ---@type conform.setupOpts
     opts = {
       formatters_by_ft = {
-        mdsvex = { "prettier" },
-        svelte = { "prettier" },
+        mdx = { "prettier" },
       },
     },
   },
@@ -14,11 +13,10 @@ return {
     "echasnovski/mini.icons",
     opts = {
       extension = {
-        mdsvex = { glyph = "", hl = "MiniIconsOrange" },
-        svx = { glyph = "", hl = "MiniIconsOrange" },
+        mdx = { glyph = "󰽛", hl = "MiniIconsBlue" },
       },
       filetype = {
-        mdsvex = { glyph = "", hl = "MiniIconsOrange" },
+        mdx = { glyph = "󰽛", hl = "MiniIconsBlue" },
       },
     },
   },

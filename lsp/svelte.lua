@@ -1,6 +1,5 @@
 ---Organize imports in the current buffer
 local function organize_imports()
-  -- Use synchronous request to avoid race conditions with formatting
   local params = {
     textDocument = vim.lsp.util.make_text_document_params(),
     context = {
@@ -8,18 +7,18 @@ local function organize_imports()
       diagnostics = {},
     },
   }
-  local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 1000)
-  if result and next(result) then
-    for _, res in pairs(result) do
-      if res.result and #res.result > 0 then
-        vim.lsp.buf.code_action({
-          context = {
-            only = { "source.organizeImports" },
-            diagnostics = {},
-          },
-          apply = true,
-        })
-        break
+
+  local results = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 1000)
+  if not results then
+    return
+  end
+
+  for client_id, response in pairs(results) do
+    for _, action in ipairs(response.result or {}) do
+      if action.edit then
+        local client = vim.lsp.get_client_by_id(client_id)
+        vim.lsp.util.apply_workspace_edit(action.edit, client and client.offset_encoding or "utf-16")
+        return
       end
     end
   end
@@ -28,7 +27,7 @@ end
 ---@type vim.lsp.Config
 return {
   cmd = { "svelteserver", "--stdio" },
-  filetypes = { "svelte" },
+  filetypes = { "svelte", "mdsvex" },
   root_dir = function(bufnr, on_dir)
     local root_files = { "package.json", ".git" }
     local fname = vim.api.nvim_buf_get_name(bufnr)

@@ -2,9 +2,11 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    -- The archived `main` branch is a separate rewrite with different setup.
+    -- This config targets the legacy branch layout.
+    branch = "master",
     version = false, -- last release is way too old and doesn't work on Windows
     build = ":TSUpdate",
-    main = "nvim-treesitter.configs", -- Sets main module to use for opts
     event = "LazyFile",
     lazy = require("utils.vim").opened_to_file, -- load treesitter early when opening a file from the cmdline
     init = function(plugin)
@@ -14,10 +16,30 @@ return {
       -- Luckily, the only things that those plugins need are the custom queries, which we make available
       -- during startup.
       require("lazy.core.loader").add_to_rtp(plugin)
+      local runtime_dir = plugin.dir .. "/runtime"
+      if vim.uv.fs_stat(runtime_dir) then
+        vim.opt.rtp:prepend(runtime_dir)
+      end
+      -- Register custom query predicates/directives early so injection queries work
+      -- before the full treesitter config runs. The frozen `master` branch exposes
+      -- a Lua module here; `main` moved this to a runtime plugin file.
+      local ok = pcall(require, "nvim-treesitter.query_predicates")
+      if not ok then
+        local predicate_file = plugin.dir .. "/plugin/query_predicates.lua"
+        if vim.uv.fs_stat(predicate_file) then
+          dofile(predicate_file)
+        end
+      end
+      require("utils.treesitter_compat").patch_nvim_treesitter_query_predicates()
     end,
     config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
-      
+      local ok, configs = pcall(require, "nvim-treesitter.configs")
+      if ok then
+        configs.setup(opts)
+      else
+        require("nvim-treesitter").setup(opts)
+      end
+
       -- Register yaml parser for yaml.tpl filetype
       vim.treesitter.language.register("yaml", "yaml.tpl")
     end,
@@ -45,6 +67,11 @@ return {
         "gitattributes",
         "gitcommit",
         "gitignore",
+        "go",
+        "gomod",
+        "gosum",
+        "gowork",
+        "gotmpl",
         "html",
         "htmldjango",
         "javascript",
@@ -56,7 +83,6 @@ return {
         "jsonc",
         "just",
         "liquid",
-        "log",
         "lua",
         "luadoc",
         "luap",
@@ -67,7 +93,9 @@ return {
         "python",
         "query",
         "regex",
+        "ron",
         "rst",
+        "rust",
         "svelte",
         "toml",
         "tsx",
