@@ -1,4 +1,5 @@
 local M = {}
+local fish_shell = vim.fn.exepath("fish")
 
 M.options = {
   autowrite = true, -- Enable autowrite
@@ -42,7 +43,7 @@ M.options = {
   ruler = false, -- disable the default ruler
   scrolloff = 4, -- lines of context
   sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" },
-  shell = "/usr/bin/fish",
+  shell = fish_shell ~= "" and fish_shell or vim.o.shell,
   shiftround = true, -- round indent
   shiftwidth = 2, -- size of an indent
   shortmess = { value = { W = true, I = true, c = true, C = true }, append = true },

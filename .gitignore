@@ -1,3 +1,7 @@
 LazyVim/
 .repro/
 .tests/
+
+.venv/
+
+__pycache__/
